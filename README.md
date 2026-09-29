@@ -14,6 +14,7 @@ This is a proposal, not an implemented system. ASTRA Sandbox is not a medical de
 
 - [Scope and boundaries](docs/SCOPE.md)
 - [Proposed architecture](docs/ARCHITECTURE.md)
+- [Candidate challenge brief](docs/CHALLENGE_BRIEF.md)
 - [Contributor working rules](AGENTS.md)
 
 ## License
