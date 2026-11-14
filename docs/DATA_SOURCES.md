@@ -2,40 +2,69 @@
 
 ## Provenance rules
 
-- Every reading identifies synthetic or real provenance.
+- Synthetic telemetry and historical research records are separate data products.
 - Synthetic values are never labeled as NASA data.
-- Real readings require a traceable source reference.
-- Baselines are separated by source type, source, and source reference.
-- A scientific reference is not automatically a usable dataset.
+- Real records retain a traceable source page, direct file URL, accession, and citation.
+- Historical sample timepoints are never converted into invented timestamps.
+- Research records are not treated as live sensor feeds or clinical thresholds.
 
-## Current implementation
+## Integrated NASA source: OSDR OSD-569
 
-`data/synthetic/demo_telemetry.csv` contains 40 synthetic observations for fictional astronaut ASTRA-01. The dashboard and CLI use this data for the demonstration. No real NASA or partner-agency dataset is ingested by the current code.
+**Dataset:** SpaceX Inspiration4 whole blood / Complete Blood Count (CBC)  
+**Provider:** NASA Open Science Data Repository (OSDR)  
+**Study page:** https://osdr.nasa.gov/bio/repo/data/studies/OSD-569  
+**Direct file:** \`LSDS-7_Complete_Blood_Count_CBC.upload_SUBMITTED.csv\`  
+**DOI:** 10.26030/e0rx-sh52  
+**Bundled CSV:** \`data/nasa/osd569/LSDS-7_Complete_Blood_Count_CBC.upload_SUBMITTED.csv\`  
+**Normalized JSON:** \`data/nasa/osd569-cbc.json\`  
+**SHA-256:** \`10a878b009eb2ea11a13fe92ad698098858639e8ed02f5ee849431313b9457d3\`
 
-## Challenge resources identified
+The original CSV was checked against the source SHA-256 recorded in a NASA OSDR data mirror, then bundled unchanged. A downloader at \`scripts/fetch_nasa_osd569.py\` retrieves the file from NASA's OSDR download endpoint and verifies the same hash before writing it. Run \`PYTHONPATH=src python -m astra.osdr\` to regenerate the normalized JSON.
 
-| Resource | Origin | Treatment in ASTRA |
-| --- | --- | --- |
-| 5 Hazards of Human Spaceflight | NASA | Background context |
-| Risks of Human Spaceflight | NASA HRP | Research context |
-| Ongoing HRP Research in Space | NASA HRP | Research context; inspect for structured data |
-| Monitoring Radiation for Astronaut Health | Canadian Space Agency | Partner research context |
-| Why Do We Conduct Science Experiments in Space? | NASA | Educational context |
+### Data shape
 
-These titles must be checked against the live challenge Resources tab and linked source pages before claiming any one of them is a qualifying data source. The organizer guidance says Global Awards eligibility requires at least one NASA data source included in the selected challenge Resources. Do not substitute an unrelated NASA dataset without confirming eligibility.
+- 553 observations across 28 blood-draw samples.
+- Four de-identified crew identifiers: C001–C004.
+- Twenty reported analytes.
+- Seven collection labels: L-92, L-44, L-3 (before launch) and R+1, R+45, R+82, R+194 (after return).
+- There are no in-flight CBC samples in this file.
+- Some sample/analyte combinations are absent; the adapter preserves those gaps rather than imputing values.
 
-## NASA measurement reference
+### ASTRA use
 
-NASA Standard Measures: https://www.nasa.gov/reference/standard-measures/
+OSD-569 is presented as a separate historical-research panel in the dashboard. It demonstrates source-aware import, sample timeline handling, unit/reference-range preservation, and explicit data-quality reporting. It is not passed into the synthetic telemetry engine, personal-baseline builder, or repeated-deviation alert logic.
 
-This describes measurement domains including activity/light exposure, sleep, and cognition. It informs candidate metrics but is not treated as live telemetry or as the qualifying challenge dataset.
+### Data-quality treatment
 
-## Integration decision
+A data-integrity check compares absolute differential blood counts with their corresponding percentage and total white-blood-cell count. Sample C003 at L-92 fails that internal consistency check. Its original 19 values are preserved and marked \`suspect\`; the adapter does not silently correct them or use them for inference.
 
-No dataset adapter is claimed as implemented. Before integration, confirm:
-1. The resource is included in this challenge's official Resources tab.
-2. The resource exposes actual structured observations, not only descriptive research text.
-3. Units, timestamps, subject identifiers, access conditions, and license/terms are understood.
-4. Any privacy restrictions are respected.
+This is a data-quality heuristic, not a clinical rule. Source-provided lab reference ranges are displayed per measurement as Earth-laboratory context only. They are not astronaut-specific baselines, NASA mission limits, warning thresholds, or diagnostic criteria.
 
-Until then, the dashboard explicitly labels the included data synthetic.
+### Access, citation, and acknowledgement
+
+- Study: https://osdr.nasa.gov/bio/repo/data/studies/OSD-569
+- OSDR download endpoint: https://osdr.nasa.gov/geode-py/ws/studies/OSD-569/download?source=datamanager&file=LSDS-7_Complete_Blood_Count_CBC.upload_SUBMITTED.csv
+- DOI: 10.26030/e0rx-sh52
+- Required acknowledgement for this project: **“Data are courtesy of the NASA Open Science Data Repository.”**
+
+NASA OSDR describes access to public data and publishes data-use terms. This repository does not assert a study-specific CC BY or CC0 license for OSD-569. Follow the current OSDR terms and preserve citation/acknowledgement; the ASTRA software license does not re-license the dataset.
+
+## Synthetic operational demo telemetry
+
+\`data/synthetic/demo_telemetry.csv\` contains 40 synthetic observations for fictional astronaut ASTRA-01. These records demonstrate timestamped daily telemetry, personal baselines, and repeated-deviation review prompts. They are not NASA measurements.
+
+## Challenge-resource context
+
+The official challenge Navigator's November 13 response to the Health Monitoring Software challenge says there is no single mandatory downloadable dataset and recommends exploring NASA OSDR and the NASA Life Sciences Portal. It explicitly warns that some astronaut-health data are biological samples or processed research results rather than real-time measurements.
+
+The GO Team's general resources guidance separately says Global Awards eligibility requires at least one NASA data source included in the selected challenge's Resources tab. In the final project submission, list the exact Resources entry and the OSDR study separately, and confirm that the entry-to-dataset relationship is accurate. Do not represent OSD-569 as a live feed or claim it was the exact linked source unless verified.
+
+Challenge Navigator discussion: https://github.com/nasa/spaceapps/discussions/2025  
+GO Team resource requirement: https://github.com/nasa/spaceapps/discussions/1827
+
+## Other references
+
+- NASA OSDR FAQ: https://science.nasa.gov/reference/osdr-faq/
+- NASA OSDR Terms and Conditions: https://science.nasa.gov/reference/osdr-help-terms-and-conditions/
+- NASA HRP — Ongoing HRP Research in Space: https://www.nasa.gov/hrp/ongoing-hrp-research/
+- NASA Standard Measures: https://www.nasa.gov/reference/standard-measures/
