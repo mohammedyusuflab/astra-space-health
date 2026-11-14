@@ -10,7 +10,7 @@ The CI workflow must pass all unit tests and the static-site build. The build cr
 
 - index.html: public project landing page.
 - dashboard/index.html and dashboard/app.js: interactive ASTRA browser workspace (manual entry, CSV import, browser-side analysis, review queue, filtering and exports).
-- output/demo-report.json: generated synthetic telemetry report (40 observations, four personal baselines, two demonstration review alerts).
+- output/demo-report.json: generated synthetic telemetry report (60 observations, six personal baselines, two demonstration review alerts).
 - data/nasa/osd569-cbc.json: normalized NASA OSDR OSD-569 research data (553 measurements, 28 samples, four de-identified subjects, 20 analytes, one suspect sample).
 
 The dashboard loads these JSON files and its application script using relative paths. The synthetic/operational telemetry workflow and historical NASA research remain separate. The build validates required interactive controls, checks JavaScript syntax when Node.js is available, checks the expected dataset summary, and fails rather than silently publishing an incomplete bundle.
