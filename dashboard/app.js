@@ -340,23 +340,31 @@
       metrics.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m.replaceAll('_', ' ')) + '</option>'; }).join('');
     astronautSelect.innerHTML = '<option value="all">All crew IDs</option>' +
       astronauts.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join('');
-    if (metrics.indexOf(metricCurrent) >= 0 || metricCurrent === 'all') metricSelect.value = metricCurrent;
+    const validMetricKeys = metricUnits.map(function (item) {
+      return JSON.stringify([item.metric, item.unit]);
+    });
+    if (validMetricKeys.indexOf(metricCurrent) >= 0 || metricCurrent === 'all') {
+      metricSelect.value = metricCurrent === 'all' ? preferredKey : metricCurrent;
+    }
     if (astronauts.indexOf(astronautCurrent) >= 0 || astronautCurrent === 'all') astronautSelect.value = astronautCurrent;
   }
 
   function renderChart() {
-    const metric = $('#metric-filter').value;
+    const metricKey = $('#metric-filter').value;
     const astronaut = $('#astronaut-filter').value;
-    $('#chart-title').textContent = metric === 'all' ? 'Operational indicator trends' :
-      metric.replaceAll('_', ' ') + ' trend';
-    if (metric === 'all' && new Set(state.readings.map(function (r) { return r.metric; })).size > 1) {
-      $('#chart').innerHTML = '<text x="350" y="115" text-anchor="middle" fill="#91a4bc">Select one indicator to compare values with its personal baseline.</text>';
-      $('#chart-note').textContent = 'Different indicators use different units and should not share one numeric axis.';
+    const selectedMetric = metricKey === 'all' ? null : JSON.parse(metricKey);
+    $('#chart-title').textContent = selectedMetric
+      ? selectedMetric[0].replaceAll('_', ' ') + ' trend · ' + selectedMetric[1]
+      : 'Operational indicator trends';
+    if (!selectedMetric) {
+      $('#chart').innerHTML = '<text x="350" y="115" text-anchor="middle" fill="#91a4bc">Select one indicator and unit to compare values with its personal baseline.</text>';
+      $('#chart-note').textContent = 'Different indicators and units must be inspected on separate numeric axes.';
       return;
     }
     let points = state.results.filter(function (r) {
       return r.reading.value !== null &&
-        (metric === 'all' || r.reading.metric === metric) &&
+        r.reading.metric === selectedMetric[0] &&
+        r.reading.unit === selectedMetric[1] &&
         (astronaut === 'all' || r.reading.astronaut_id === astronaut);
     });
     points.sort(function (a, b) { return parseTime(a.reading.timestamp) - parseTime(b.reading.timestamp); });
@@ -410,8 +418,8 @@
       esc(isoDate(points[points.length - 1].reading.timestamp)) + '</text>');
     svg.innerHTML = paths.join('');
     $('#chart-note').textContent = points.length + ' points · ' +
-      (metric === 'all' ? 'all indicators' : metric.replaceAll('_', ' ')) +
-      ' · baseline shown when a matching personal reference is available. Colors: cyan = within band, amber = single deviation, red = repeated alert.';
+      selectedMetric[0].replaceAll('_', ' ') + ' (' + selectedMetric[1] + ')' +
+      ' · baseline shown for each matching crew/source group. Colors: cyan = within band, amber = single deviation, red = repeated alert.';
   }
 
   function renderAlerts() {
