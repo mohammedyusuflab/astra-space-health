@@ -656,8 +656,27 @@
     });
   }
 
+  function registerOfflineShell() {
+    if (typeof navigator === 'undefined' || !('serviceWorker' in navigator) || !window.isSecureContext) {
+      const status = $('#offline-status');
+      if (status) status.textContent = 'OFFLINE CACHE UNAVAILABLE';
+      return;
+    }
+    navigator.serviceWorker.register('./sw.js')
+      .then(function () { return navigator.serviceWorker.ready; })
+      .then(function () {
+        const status = $('#offline-status');
+        if (status) status.textContent = 'OFFLINE SHELL READY';
+      })
+      .catch(function () {
+        const status = $('#offline-status');
+        if (status) status.textContent = 'OFFLINE CACHE NOT INSTALLED';
+      });
+  }
+
   function init() {
     wireEvents();
+    registerOfflineShell();
     $('#manual-timestamp').value = new Date().toISOString().slice(0, 16);
     $('#manual-astronaut').value = 'ASTRA-01';
     $('#manual-source').value = 'ASTRA-browser-entry';
