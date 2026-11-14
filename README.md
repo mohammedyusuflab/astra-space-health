@@ -84,6 +84,13 @@ The challenge Navigator's November 13 response recommends OSDR as a useful sourc
 
 The 2-standard-deviation band and two-consecutive-observation rule in the synthetic engine are demonstration settings only. They are not NASA requirements or medical thresholds. Inspiration4 was a three-day mission, so OSD-569 cannot validate health monitoring for long-duration missions.
 
+## Submission materials
+
+- [English project submission draft](docs/SUBMISSION_DRAFT.md)
+- [30-second demo script and recording checklist](docs/DEMO_SCRIPT.md)
+- [AI and tool-use disclosure](docs/AI_DISCLOSURE.md)
+- [NASA data sources and provenance](docs/DATA_SOURCES.md)
+
 ## License
 
 The software license applies to ASTRA code. It does not supersede the source terms for NASA OSDR data.
