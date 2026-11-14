@@ -119,6 +119,7 @@ def build_site(destination: Path) -> Path:
         raise FileNotFoundError("A required demo or NASA OSDR source CSV is missing.")
 
     dashboard_html = dashboard_source.read_text(encoding="utf-8")
+    dashboard_app = dashboard_app_source.read_text(encoding="utf-8")
     required_controls = (
         'id="load-demo"',
         'id="csv-file"',
@@ -128,11 +129,12 @@ def build_site(destination: Path) -> Path:
         'id="download-csv"',
         'id="nasa-research"',
         'src="./app.js"',
-        "register('./sw.js')",
     )
     missing_controls = [item for item in required_controls if item not in dashboard_html]
     if missing_controls:
         raise RuntimeError(f"Dashboard is missing required interactive elements: {missing_controls}")
+    if "register('../sw.js')" not in dashboard_app:
+        raise RuntimeError("Dashboard does not register the site-root offline service worker.")
     if dashboard_html.count('id="rows"') != 1:
         raise RuntimeError("Dashboard must contain exactly one operational observation table.")
 
