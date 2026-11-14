@@ -226,6 +226,19 @@
             explanation: 'There is not enough valid personal reference data for this metric and unit.',
             suggested_action: 'Collect sufficient valid observations in a defined calibration period before comparing changes.'
           };
+        } else if (
+          parseTime(reading.timestamp).getTime() >= parseTime(baseline.period_start).getTime() &&
+          parseTime(reading.timestamp).getTime() <= parseTime(baseline.period_end).getTime()
+        ) {
+          consecutive = 0;
+          result = {
+            reading: reading, status: 'within_baseline',
+            baseline_mean: baseline.mean,
+            baseline_standard_deviation: baseline.standard_deviation,
+            deviation_score: null, consecutive_deviations: 0, alert: false,
+            explanation: 'This observation belongs to the selected calibration window and contributes to the personal baseline. It is not evaluated as an operational deviation.',
+            suggested_action: 'Complete the calibration period, then review subsequent observations against this personal reference.'
+          };
         } else {
           const delta = reading.value - baseline.mean;
           let score = null, isDeviation = false, comparison = '';
