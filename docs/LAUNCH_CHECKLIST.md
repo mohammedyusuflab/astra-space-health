@@ -2,18 +2,18 @@
 
 ## Current release state
 
-The repository contains the application, data, tests, documentation, a static-site builder, and a manual GitHub Pages deployment workflow. The public website is **not live yet**. The repository currently has GitHub Pages disabled; one repository setting must be changed before the deployment workflow can publish.
+The repository contains the analysis engine, interactive browser workspace, source data, automated tests, documentation, and GitHub Pages deployment workflow. GitHub Pages has been enabled and the landing page was previously confirmed to open. The latest interactive-dashboard release still requires a fresh deployment and browser acceptance check before it can be described as verified.
 
 ## 1. Build verification
 
 The CI workflow must pass all unit tests and the static-site build. The build creates:
 
 - index.html: public project landing page.
-- dashboard/index.html: interactive ASTRA browser dashboard.
+- dashboard/index.html and dashboard/app.js: interactive ASTRA browser workspace (manual entry, CSV import, browser-side analysis, review queue, filtering and exports).
 - output/demo-report.json: generated synthetic telemetry report (40 observations, four personal baselines, two demonstration review alerts).
 - data/nasa/osd569-cbc.json: normalized NASA OSDR OSD-569 research data (553 measurements, 28 samples, four de-identified subjects, 20 analytes, one suspect sample).
 
-The dashboard loads these JSON files using relative paths. The synthetic operational demo and historical NASA research remain separate. The build validates the expected dataset summary and fails rather than silently publishing an incomplete or mismatched bundle.
+The dashboard loads these JSON files and its application script using relative paths. The synthetic/operational telemetry workflow and historical NASA research remain separate. The build validates required interactive controls, checks JavaScript syntax when Node.js is available, checks the expected dataset summary, and fails rather than silently publishing an incomplete bundle.
 
 To build locally from the repository root:
 
@@ -21,22 +21,13 @@ To build locally from the repository root:
 
 The generated website is written to build/site/. No third-party Python packages are required.
 
-## 2. One-time GitHub Pages setup
+## 2. GitHub Pages configuration
 
-1. Open the repository: https://github.com/mohammedyusuflab/astra-space-health
-2. Open **Settings → Pages**.
-3. Under **Build and deployment**, set **Source** to **GitHub Actions**.
-4. Save the setting.
-
-This repository-level setting is required because GitHub Pages is not enabled yet. Do not create a personal access token or add repository secrets for the supplied deployment workflow.
+GitHub Pages has been configured with **Source = GitHub Actions**. The workflow deploys automatically after a push to `main`, and can also be started manually from the Actions tab. Do not create a personal access token or add repository secrets for the supplied workflow.
 
 ## 3. Publish the public demo
 
-1. Open the repository's **Actions** tab.
-2. Select **Deploy ASTRA website**.
-3. Select **Run workflow** and choose the main branch.
-4. Wait for the workflow to complete successfully.
-5. Open the deployment URL shown by the github-pages environment.
+After the final commit, open the repository's **Actions** tab and verify the latest **Deploy ASTRA website** run completed successfully. Then open the deployment URL shown by the github-pages environment. A successful code commit alone is not proof that the latest website version has deployed.
 
 Expected project-site URL:
 
@@ -53,13 +44,20 @@ These are target URLs until a successful Pages deployment is recorded. Do not pa
 Open the deployed site in an incognito/private browser window (logged out of GitHub) and verify:
 
 - The root page loads and the **Open ASTRA dashboard** link works.
-- The dashboard header shows **DEMONSTRATION MODE**.
-- Synthetic metrics, trend chart, observation log, and review queue load without a report-not-found message.
+- The dashboard header shows **DEMONSTRATION MODE** and the operational workspace is visible.
+- Bundled demo data load as 40 observations with four baselines and two repeated-deviation demonstration alerts.
+- Change the baseline dates/threshold/repeat count and press **Run analysis**; the metrics, chart, review queue and log update.
+- Add one valid manual observation; it appears in the log and the analysis reruns.
+- Import the downloaded CSV template after filling at least three valid calibration readings and subsequent readings; verify baseline and result states.
+- Import a malformed CSV and verify row/field issues are reported rather than silently accepted.
+- Export JSON and CSV and confirm both files contain the current result set.
+- Clear the operational workspace and confirm the NASA historical panel remains available and separate.
+- The observation log filters by search text and result state.
 - The NASA research panel loads all five summary counts and both selectors.
 - C001 / White blood cell count shows the historical sample timeline.
 - C003 / Absolute neutrophils visibly marks the suspect L-92 sample and explains the data-quality flag.
 - NASA measurements do not enter the synthetic alert engine.
-- No browser console/network error indicates missing JSON, JavaScript failure, or a broken path.
+- No browser console/network error indicates missing JSON/JavaScript, runtime failure, or a broken path.
 - The page is readable on a narrow mobile viewport as well as desktop.
 
 If any item fails, do not submit the website as a working demo link. Fix and redeploy first.
@@ -85,4 +83,4 @@ The official 2026 event page states that project submission opened on November 1
 
 ## 6. Final release decision
 
-ASTRA is ready for a public-demo deployment once the Pages setting is enabled and the deployment/anonymous browser checks pass. It is not considered competition-submission complete until the team has submitted the project through the official Space Apps Project tab.
+ASTRA is ready to be treated as a working public demo only after the latest Pages workflow succeeds and every anonymous-browser acceptance check above passes. It is not a clinically validated medical device or certified flight-health system. It is not considered competition-submission complete until the team has submitted the project through the official Space Apps Project tab.
