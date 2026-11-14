@@ -161,10 +161,10 @@ def build_site(destination: Path) -> Path:
     report = json.loads(report_path.read_text(encoding="utf-8"))
     nasa = json.loads(nasa_json_path.read_text(encoding="utf-8"))
 
-    if len(report.get("results", [])) != 40:
-        raise RuntimeError("Expected 40 synthetic observations in the deployment report.")
-    if len(report.get("baselines", [])) != 4:
-        raise RuntimeError("Expected four provenance-separated synthetic baselines.")
+    if len(report.get("results", [])) != 60:
+        raise RuntimeError("Expected 60 synthetic observations in the deployment report.")
+    if len(report.get("baselines", [])) != 6:
+        raise RuntimeError("Expected six provenance-separated synthetic baselines.")
     alert_count = sum(1 for item in report["results"] if item.get("alert"))
     if alert_count != 2:
         raise RuntimeError("Expected two repeated-deviation demonstration alerts.")
