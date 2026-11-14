@@ -48,11 +48,12 @@ Before final submission, confirm the precise Resource entry shown in the team's 
 - CSV ingestion and validation.
 - Provenance-aware baselines and explainable rule-based analysis for the synthetic demo.
 - NASA OSDR source adapter with schema checks, checksum protection, relative sample-time handling, and sample-quality flagging.
-- Interactive browser dashboard with separate operational and NASA historical-research data paths.
-- GitHub Actions workflow for unit tests and normalized OSDR data build.
+- Interactive browser workspace with manual entry, CSV import, configurable baseline and alert settings, local analysis, alert review acknowledgement, searchable results, and JSON/CSV exports.
+- A site-root service worker caches the public app shell and demo/research datasets for offline viewing after the first online load; operational readings remain session-only.
+- GitHub Actions workflow for Python and browser-engine/UI tests, site-build verification, and automatic Pages deployment on pushes to main.
 
 ## Safety and limitations
-ASTRA is an educational prototype, not a medical device. It does not diagnose, prescribe, or determine flight readiness. The synthetic deviation band and repeated-observation rule are demonstration parameters, not clinical or NASA flight-medicine thresholds. OSD-569 is retrospective research from the three-day Inspiration4 mission, has no in-flight CBC samples, and does not validate long-duration mission monitoring. The demo does not connect to spacecraft sensors or current astronaut medical records.
+ASTRA is a functional competition software demonstrator, not a clinically validated or certified medical device. It does not diagnose, prescribe, or determine flight readiness. The synthetic deviation band and repeated-observation rule are demonstration parameters, not clinical or NASA flight-medicine thresholds. OSD-569 is retrospective research from the three-day Inspiration4 mission, has no in-flight CBC samples, and does not validate long-duration mission monitoring. The demo does not connect to spacecraft sensors or current astronaut medical records.
 
 ## Repository and run instructions
 - Source repository: https://github.com/mohammedyusuflab/astra-space-health
@@ -60,7 +61,7 @@ ASTRA is an educational prototype, not a medical device. It does not diagnose, p
 - Start local server: python -m http.server 8000
 - Open http://localhost:8000/dashboard/
 - Build the complete static website bundle with `python scripts/build_site.py`; output is written to `build/site/`.
-- After GitHub Pages is enabled and the manual deployment workflow succeeds, the expected public project URL is https://mohammedyusuflab.github.io/astra-space-health/ and the dashboard URL is https://mohammedyusuflab.github.io/astra-space-health/dashboard/. These target URLs must be tested anonymously before they are entered into the final competition form.
+- After the automatic GitHub Pages deployment workflow succeeds, the expected public project URL is https://mohammedyusuflab.github.io/astra-space-health/ and the dashboard URL is https://mohammedyusuflab.github.io/astra-space-health/dashboard/. These target URLs must be tested anonymously before they are entered into the final competition form.
 
 ## AI tools and external resources
 See AI_DISCLOSURE.md and DATA_SOURCES.md. The AI assistant helped draft code and documentation; no generative AI model runs inside the ASTRA prototype.
