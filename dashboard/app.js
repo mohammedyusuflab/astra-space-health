@@ -6,7 +6,8 @@
   const state = {
     readings: [], results: [], baselines: [], issues: [],
     sourceLabel: 'Bundled demonstration dataset',
-    excludedReal: 0
+    excludedReal: 0,
+    reviewed: new Set()
   };
   const REQUIRED = ['timestamp', 'astronaut_id', 'metric', 'unit', 'source_type', 'source'];
   const VALID_QUALITY = ['valid', 'missing', 'invalid', 'outlier'];
@@ -40,6 +41,11 @@
   function keyFor(r) {
     return JSON.stringify([
       r.astronaut_id, r.metric, r.unit, r.source_type, r.source, r.source_reference || ''
+    ]);
+  }
+  function alertKey(result) {
+    return JSON.stringify([
+      keyFor(result.reading), result.reading.timestamp, result.reading.value
     ]);
   }
   function normalizeReading(r) {
@@ -411,11 +417,16 @@
   function renderAlerts() {
     const alerts = state.results.filter(function (r) { return r.alert; }).slice().reverse();
     $('#alerts').innerHTML = alerts.length ? alerts.map(function (r) {
+      const key = alertKey(r);
+      const reviewed = state.reviewed.has(key);
       return '<article class="alert"><b>' + esc(r.reading.metric.replaceAll('_', ' ')) +
         ' · ' + esc(r.reading.astronaut_id) + '</b><div>' + esc(r.explanation) +
         '</div><div class="muted">Day ' + esc(r.reading.mission_day == null ? '—' : r.reading.mission_day) +
-        ' · ' + esc(r.reading.timestamp) + '</div><div class="muted"><strong>Review:</strong> ' +
-        esc(r.suggested_action) + '</div></article>';
+        ' · ' + esc(r.reading.timestamp) + '</div><div class="muted"><strong>Suggested review:</strong> ' +
+        esc(r.suggested_action) + '</div><div class="review-actions"><span class="tag">' +
+        (reviewed ? 'ACKNOWLEDGED IN THIS SESSION' : 'AWAITING REVIEW') +
+        '</span><button class="action-btn" type="button" data-review-key="' + esc(key) + '">' +
+        (reviewed ? 'Reopen review' : 'Mark reviewed') + '</button></div></article>';
     }).join('') : '<div class="empty">No repeated-deviation alerts under the current settings.</div>';
   }
 
@@ -477,6 +488,7 @@
     });
     state.readings = accepted;
     state.issues = issues;
+    state.reviewed.clear();
     state.excludedReal = 0;
     state.sourceLabel = sourceLabel;
     recalculate();
@@ -494,6 +506,7 @@
       state.issues = (report.validation_issues || []).slice();
       state.sourceLabel = 'Bundled demonstration dataset';
       state.excludedReal = 0;
+      state.reviewed.clear();
       recalculate();
       setNotice('Demonstration dataset loaded. You can add readings, import a CSV, change baseline settings, and rerun the analysis.', 'success');
     } catch (error) {
@@ -550,14 +563,15 @@
     return {
       baselines: state.baselines,
       results: state.results,
-      validation_issues: state.issues
+      validation_issues: state.issues,
+      reviewed_alerts: Array.from(state.reviewed)
     };
   }
   function downloadCSV() {
     const columns = [
       'timestamp', 'astronaut_id', 'metric', 'value', 'unit', 'status',
       'baseline_mean', 'baseline_standard_deviation', 'deviation_score',
-      'consecutive_deviations', 'alert', 'source_type', 'source',
+      'consecutive_deviations', 'alert', 'reviewed', 'source_type', 'source',
       'source_reference', 'quality', 'mission_day', 'context_note'
     ];
     function quote(v) {
@@ -570,8 +584,9 @@
       const values = [
         item.timestamp, item.astronaut_id, item.metric, item.value, item.unit, r.status,
         r.baseline_mean, r.baseline_standard_deviation, r.deviation_score,
-        r.consecutive_deviations, r.alert, item.source_type, item.source,
-        item.source_reference, item.quality, item.mission_day, item.context_note
+        r.consecutive_deviations, r.alert, state.reviewed.has(alertKey(r)),
+        item.source_type, item.source, item.source_reference, item.quality,
+        item.mission_day, item.context_note
       ];
       lines.push(values.map(quote).join(','));
     });
@@ -611,6 +626,17 @@
       } catch (error) { setNotice(error.message, 'error'); }
       event.target.value = '';
     });
+    $('#alerts').addEventListener('click', function (event) {
+      const button = event.target.closest('button[data-review-key]');
+      if (!button) return;
+      const key = button.getAttribute('data-review-key');
+      if (state.reviewed.has(key)) state.reviewed.delete(key);
+      else state.reviewed.add(key);
+      renderAlerts();
+      setNotice(state.reviewed.has(key)
+        ? 'Alert acknowledged for review in this browser session. The analysis result is unchanged.'
+        : 'Alert returned to the review queue. The analysis result is unchanged.', 'success');
+    });
     $('#metric-filter').addEventListener('change', renderChart);
     $('#astronaut-filter').addEventListener('change', renderChart);
     $('#log-search').addEventListener('input', renderRows);
@@ -624,6 +650,7 @@
       if (!window.confirm('Clear all current operational readings from this browser session?')) return;
       state.readings = []; state.results = []; state.baselines = []; state.issues = [];
       state.sourceLabel = 'No dataset loaded'; state.excludedReal = 0;
+      state.reviewed.clear();
       renderAll();
       setNotice('Operational workspace cleared. NASA historical research remains separate and unchanged.', 'success');
     });
