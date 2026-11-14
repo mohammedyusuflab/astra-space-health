@@ -137,7 +137,8 @@ def build_site(destination: Path) -> Path:
         raise RuntimeError("Expected 40 synthetic observations in the deployment report.")
     if len(report.get("baselines", [])) != 4:
         raise RuntimeError("Expected four provenance-separated synthetic baselines.")
-    if len(report.get("alerts", [])) != 2:
+    alert_count = sum(1 for item in report["results"] if item.get("alert"))
+    if alert_count != 2:
         raise RuntimeError("Expected two repeated-deviation demonstration alerts.")
     summary = nasa.get("summary", {})
     expected = {
@@ -161,7 +162,7 @@ def build_site(destination: Path) -> Path:
     print(f"Static ASTRA site built: {target}")
     print(f"Synthetic observations: {len(report['results'])}")
     print(f"Synthetic baselines: {len(report['baselines'])}")
-    print(f"Synthetic review alerts: {len(report.get('alerts', []))}")
+    print(f"Synthetic review alerts: {alert_count}")
     print(
         "NASA OSDR OSD-569: "
         f"{summary['record_count']} measurements / "
