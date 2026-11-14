@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import re
@@ -23,6 +24,7 @@ DOWNLOAD_URL = (
     "?source=datamanager&file=LSDS-7_Complete_Blood_Count_CBC.upload_SUBMITTED.csv"
 )
 DATASET_DOI = "10.26030/e0rx-sh52"
+EXPECTED_SOURCE_SHA256 = "10a878b009eb2ea11a13fe92ad698098858639e8ed02f5ee849431313b9457d3"
 DEFAULT_CSV = (
     Path(__file__).resolve().parents[2]
     / "data" / "nasa" / "osd569"
@@ -138,6 +140,13 @@ def build_osd569_dataset(csv_path: str | Path = DEFAULT_CSV) -> dict[str, Any]:
     path = Path(csv_path)
     if not path.is_file():
         raise OSDRDataError(f"NASA OSD-569 CSV not found: {path}")
+    actual_sha256 = hashlib.sha256(path.read_bytes()).hexdigest()
+    if actual_sha256 != EXPECTED_SOURCE_SHA256:
+        raise OSDRDataError(
+            "NASA OSD-569 source checksum mismatch. Expected "
+            f"{EXPECTED_SOURCE_SHA256}, received {actual_sha256}. "
+            "Re-fetch the public source using scripts/fetch_nasa_osd569.py."
+        )
 
     samples: dict[tuple[str, str], dict[str, Any]] = {}
     subjects: dict[str, str] = {}
@@ -155,6 +164,8 @@ def build_osd569_dataset(csv_path: str | Path = DEFAULT_CSV) -> dict[str, Any]:
             analyte = _ANALYTE_SUFFIX.sub("", (row.get("ANALYTE") or "").strip())
             unit = (row.get("UNITS") or "").strip()
             timepoint_id = (row.get("TEST_DATE") or "").strip()
+            if (row.get("TEST_TYPE") or "").strip() != "CBC":
+                raise OSDRDataError(f"row {row_number}: expected TEST_TYPE CBC")
             if not subject or not sex or not analyte or not unit:
                 raise OSDRDataError(
                     f"row {row_number}: subject, sex, analyte, and units are required"
