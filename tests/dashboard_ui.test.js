@@ -102,7 +102,7 @@ test('dashboard boots, renders demo data, accepts a manual reading and supports 
   assert.match(getElement('stats').innerHTML, /60/);
   assert.match(getElement('indicator-cards').innerHTML, /sleep duration/i);
   assert.equal((getElement('indicator-cards').innerHTML.match(/class="indicator-card"/g) || []).length, 6);
-  assert.match(getElement('metric-filter').innerHTML, /sleep_duration \(hours\)/);
+  assert.match(getElement('metric-filter').innerHTML, /sleep duration \(hours\)/);
   assert.equal(getElement('metric-filter').value, JSON.stringify(['sleep_duration', 'hours']));
   assert.equal((getElement('alerts').innerHTML.match(/Mark reviewed/g) || []).length, 2);
   assert.equal(getElement('offline-status').textContent, 'OFFLINE SHELL READY');
