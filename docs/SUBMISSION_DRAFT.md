@@ -7,18 +7,18 @@ ASTRA — Astronaut Health Monitoring and Decision Support
 Create Health Monitoring Software for Astronauts on Space Missions
 
 ## Short description
-ASTRA is an astronaut-facing health-monitoring prototype that makes changes in health indicators easier to inspect and explain. It combines an operational demonstration using clearly labelled synthetic daily telemetry with a separate historical research view built from NASA's Inspiration4 OSDR OSD-569 blood-count dataset. The two data paths remain separate: synthetic readings demonstrate personal baselines and sustained-deviation review prompts, while NASA research samples are displayed with their original relative collection times, source reference intervals, and data-quality flags. ASTRA does not treat historical lab samples as live spacecraft telemetry, and it does not diagnose, prescribe treatment, or determine mission readiness.
+ASTRA is an astronaut-facing health-monitoring prototype that makes changes in health indicators easier to inspect and explain. It combines an interactive operational workspace using clearly labelled synthetic daily telemetry—including sleep, activity, light exposure, cognitive performance, resting heart rate and oxygen saturation—with a separate historical research view built from NASA's Inspiration4 OSDR OSD-569 blood-count dataset. The two data paths remain separate: synthetic readings demonstrate personal baselines and sustained-deviation review prompts, while NASA research samples are displayed with their original relative collection times, source reference intervals, and data-quality flags. The browser workspace accepts manually entered or CSV-supplied readings but does not connect directly to spacecraft sensors. ASTRA does not treat historical lab samples as live spacecraft telemetry, and it does not diagnose, prescribe treatment, or determine mission readiness.
 
 ## Problem and motivation
 On long-duration missions, crew members need to recognize meaningful changes in their own health indicators and understand what evidence supports a concern. A raw list of readings is difficult to interpret without personal context, clear provenance, and an explanation of why a change is being highlighted. Public astronaut-health data are fragmented and do not necessarily provide a single continuous stream of vital signs.
 
 ## What ASTRA does
-1. Loads timestamped synthetic daily health-indicator observations from CSV.
+1. Loads timestamped operational observations from CSV or manual entry; the bundled fictional demo covers sleep, activity, light exposure, cognitive performance, resting heart rate and oxygen saturation.
 2. Validates timestamps, values, quality, source type, and provenance.
 3. Builds per-astronaut personal baselines for an explicitly selected calibration period.
 4. Compares later observations with the matching baseline and explains deviations.
 5. Requires repeated consecutive deviations before raising a demonstration alert.
-6. Presents the result in a browser dashboard with trends, baseline context, an alert-review queue, and an observation log.
+6. Presents the result in an interactive browser workspace with manual entry, CSV import, configurable analysis, trends, baseline context, a review queue, a searchable observation log, and JSON/CSV exports.
 7. Separately loads NASA OSDR OSD-569 Inspiration4 CBC research data and presents the historical sample timeline, pre-flight comparison, source lab ranges, and data-quality warnings.
 
 ## NASA data used
@@ -48,7 +48,7 @@ Before final submission, confirm the precise Resource entry shown in the team's 
 - CSV ingestion and validation.
 - Provenance-aware baselines and explainable rule-based analysis for the synthetic demo.
 - NASA OSDR source adapter with schema checks, checksum protection, relative sample-time handling, and sample-quality flagging.
-- Static browser dashboard with two separately labelled data paths.
+- Interactive browser dashboard with separate operational and NASA historical-research data paths.
 - GitHub Actions workflow for unit tests and normalized OSDR data build.
 
 ## Safety and limitations
