@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 from .engine import run_analysis
-from .io import report_to_dict, write_json_report
+from .io import write_json_report
 
 
 def _timestamp(value: str) -> datetime:
@@ -42,7 +42,6 @@ def main() -> int:
     if args.json_path:
         write_json_report(report, args.json_path)
 
-    summary = report_to_dict(report)
     print(f"Readings analyzed: {len(report.results)}")
     print(f"Baselines created: {len(report.baselines)}")
     print(f"Validation issues: {len(report.validation_issues)}")
