@@ -1,6 +1,6 @@
 # ASTRA — 30-Second Demo Script
 
-**Format:** one continuous screen recording with brief cuts; record the browser at 16:9. Narration should be in English for the project submission, with captions if needed.
+**Format:** one continuous screen recording with brief cuts; record the deployed public dashboard at 16:9. Narration should be in English for the project submission, with captions if needed. Do not record against a local server for the final public demo.
 
 | Time | Screen action | Narration |
 |---|---|---|
@@ -11,11 +11,12 @@
 | 23–30 s | Hold on the disclosure/citation at the bottom of the NASA research panel. | “Historical research is never presented as live telemetry. ASTRA supports review; it does not diagnose or prescribe.” |
 
 ## Recording checklist
-- Generate output/demo-report.json with the CLI before opening the dashboard.
-- Serve the repository root with python -m http.server 8000 and open /dashboard/.
+- Deploy the site using docs/LAUNCH_CHECKLIST.md before recording.
+- Open the public dashboard URL in a private/incognito window and confirm both panels load without a GitHub login.
+- Record the deployed site, not a local filesystem or localhost view.
 - Confirm both panels load before recording.
 - Keep the DEMONSTRATION MODE badge and REAL NASA RESEARCH DATA label visible in the relevant shots.
 - Include the OSDR citation and acknowledgement in the final frame.
 - Do not describe the CBC data as in-flight measurements.
 - Do not imply a clinical diagnosis, NASA endorsement, or validated flight-medicine alert threshold.
-- Keep the recording within the challenge's current submission limit.
+- Confirm the exact video/slide limit in the live 2026 Project Submission Guide and follow it.
