@@ -50,7 +50,9 @@ From the repository root:
 python -m http.server 8000
 \`\`\`
 
-Open http://localhost:8000/dashboard/ . The page reads the generated synthetic report and the normalized NASA OSDR JSON. It does not upload data to a server.
+Open http://localhost:8000/dashboard/ . The browser workspace loads the demonstration readings and supports manual observation entry, CSV import, configurable baseline windows, deviation thresholds, repeat-alert rules, searchable result logs, and JSON/CSV export. Analysis runs locally in the browser session; imported readings are not sent to a server.
+
+CSV import requires these columns: `timestamp`, `astronaut_id`, `metric`, `value`, `unit`, `source_type`, and `source`. Timestamps must include a timezone. Use `source_type=real` only with a traceable `source_reference`. NASA OSDR historical samples remain in their separate research panel and are not loaded into the operational telemetry dataset.
 
 ## Tests
 
@@ -99,9 +101,9 @@ Build the complete static website bundle from the repository root:
 python scripts/build_site.py
 ```
 
-The builder generates the synthetic report, validates the bundled NASA OSDR OSD-569 dataset, and stages the landing page, dashboard, and JSON data under `build/site/`. The bundle is self-contained and does not require a Python server at runtime.
+The builder generates the synthetic report, validates the bundled NASA OSDR OSD-569 dataset, checks the interactive dashboard controls and JavaScript syntax when Node.js is available, and stages the landing page, dashboard application script, and JSON data under `build/site/`. The bundle is self-contained and does not require a Python server at runtime.
 
-To publish, first set the repository's **Settings → Pages → Source** to **GitHub Actions**, then run the **Deploy ASTRA website** workflow manually from the Actions tab on the `main` branch. The public site is not live until that workflow succeeds. See [docs/LAUNCH_CHECKLIST.md](docs/LAUNCH_CHECKLIST.md) for deployment, anonymous browser checks, and competition handoff.
+The **Deploy ASTRA website** workflow deploys automatically after pushes to `main` (and can also be run manually). The public site is not updated until that workflow succeeds. See [docs/LAUNCH_CHECKLIST.md](docs/LAUNCH_CHECKLIST.md) for deployment, anonymous browser checks, and competition handoff.
 
 Expected project URL after a successful deployment:
 https://mohammedyusuflab.github.io/astra-space-health/
