@@ -34,7 +34,7 @@ def _landing_page() -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="ASTRA is an functional astronaut health-monitoring software demonstrator with separate synthetic telemetry and NASA historical research views.">
+  <meta name="description" content="ASTRA is a functional astronaut health-monitoring software demonstrator with separate synthetic telemetry and NASA historical research views.">
   <meta name="theme-color" content="#08111f">
   <title>ASTRA | Astronaut Health Monitoring System</title>
   <style>
