@@ -167,12 +167,12 @@ test('timestamps without an explicit timezone are rejected', function () {
 
 
 test('CSV parser rejects malformed quote placement', function () {
-  const header = 'timestamp,astronaut_id,metric,value,unit,source_type,source\\n';
+  const header = 'timestamp,astronaut_id,metric,value,unit,source_type,source\n';
   assert.throws(function () {
-    engine.parseCSV(header + '2026-11-01T08:00:00Z,A,"heart"rate,70,bpm,synthetic,demo\\n');
+    engine.parseCSV(header + '2026-11-01T08:00:00Z,A,"heart"rate,70,bpm,synthetic,demo\n');
   }, /characters after a closing quote/i);
   assert.throws(function () {
-    engine.parseCSV(header + '2026-11-01T08:00:00Z,A,heart"rate,70,bpm,synthetic,demo\\n');
+    engine.parseCSV(header + '2026-11-01T08:00:00Z,A,heart"rate,70,bpm,synthetic,demo\n');
   }, /quote inside an unquoted field/i);
 });
 
