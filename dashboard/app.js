@@ -519,11 +519,13 @@
     $('#rows').innerHTML = rows.map(function (r) {
       const statusClass = r.alert ? 'state-danger' : (r.status === 'deviation' ? 'state-warn' : '');
       return '<tr><td>' + esc(isoDate(r.reading.timestamp)) + '</td><td>' +
+        esc(r.reading.mission_day == null ? '—' : r.reading.mission_day) + '</td><td>' +
         esc(r.reading.astronaut_id) + '</td><td>' +
         esc(r.reading.metric.replaceAll('_', ' ')) + '</td><td>' +
         esc(r.reading.value == null ? '—' : r.reading.value) + ' ' + esc(r.reading.unit) +
         '</td><td><span class="tag ' + statusClass + '">' + esc(STATUS_LABELS[r.status]) +
         '</span></td><td>' + esc(r.reading.source_type) + ' · ' + esc(r.reading.source) +
+        (r.reading.source_reference ? '<div class="muted">' + esc(r.reading.source_reference) + '</div>' : '') +
         '</td></tr>';
     }).join('');
     $('#log-count').textContent = 'Showing ' + rows.length + ' of ' + state.results.length + ' observations.';
