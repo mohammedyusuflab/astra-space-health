@@ -129,6 +129,8 @@ def build_site(destination: Path) -> Path:
     missing_controls = [item for item in required_controls if item not in dashboard_html]
     if missing_controls:
         raise RuntimeError(f"Dashboard is missing required interactive elements: {missing_controls}")
+    if dashboard_html.count('id="rows"') != 1:
+        raise RuntimeError("Dashboard must contain exactly one operational observation table.")
 
     if shutil.which("node"):
         subprocess.run(
