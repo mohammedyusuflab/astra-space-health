@@ -84,6 +84,29 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(len(report.alerts), 2)
         self.assertTrue(all(a.reading.metric == "sleep_duration" for a in report.alerts))
 
+    def test_calibration_window_observations_never_trigger_operational_alerts(self):
+        records = [
+            {"timestamp": f"2026-11-0{day}T08:00:00Z", "astronaut_id": "A", "metric": "m",
+             "value": value, "unit": "u", "source_type": "synthetic", "source": "test"}
+            for day, value in ((1, "10"), (2, "10"), (3, "10"), (4, "100"), (5, "100"))
+        ]
+        validation = validate_records(records)
+        baseline_end = datetime(2026, 11, 5, 23, 59, tzinfo=timezone.utc)
+        baselines = build_baselines(
+            validation.readings,
+            period_start=BASELINE_START,
+            period_end=baseline_end,
+        )
+        results = analyze_readings(
+            validation.readings,
+            baselines,
+            deviation_threshold=1.0,
+            repeated_deviations_for_alert=2,
+        )
+        self.assertFalse(any(result.alert for result in results))
+        self.assertTrue(all(result.status == ResultStatus.WITHIN_BASELINE for result in results))
+        self.assertTrue(all("calibration window" in result.explanation for result in results))
+
     def test_one_deviation_does_not_alert(self):
         records = [
             {"timestamp": f"2026-11-0{d}T08:00:00Z", "astronaut_id": "A", "metric": "m",
