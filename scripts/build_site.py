@@ -108,10 +108,13 @@ def build_site(destination: Path) -> Path:
 
     dashboard_source = ROOT / "dashboard" / "index.html"
     dashboard_app_source = ROOT / "dashboard" / "app.js"
+    dashboard_sw_source = ROOT / "dashboard" / "sw.js"
     if not dashboard_source.is_file():
         raise FileNotFoundError(f"Dashboard file not found: {dashboard_source}")
     if not dashboard_app_source.is_file():
         raise FileNotFoundError(f"Dashboard application script not found: {dashboard_app_source}")
+    if not dashboard_sw_source.is_file():
+        raise FileNotFoundError(f"Dashboard service worker not found: {dashboard_sw_source}")
     if not DEMO_CSV.is_file() or not NASA_CSV.is_file():
         raise FileNotFoundError("A required demo or NASA OSDR source CSV is missing.")
 
@@ -125,6 +128,7 @@ def build_site(destination: Path) -> Path:
         'id="download-csv"',
         'id="nasa-research"',
         'src="./app.js"',
+        "register('./sw.js')",
     )
     missing_controls = [item for item in required_controls if item not in dashboard_html]
     if missing_controls:
@@ -138,9 +142,15 @@ def build_site(destination: Path) -> Path:
             cwd=ROOT,
             check=True,
         )
+        subprocess.run(
+            ["node", "--check", str(dashboard_sw_source)],
+            cwd=ROOT,
+            check=True,
+        )
 
     shutil.copy2(dashboard_source, dashboard_dir / "index.html")
     shutil.copy2(dashboard_app_source, dashboard_dir / "app.js")
+    shutil.copy2(dashboard_sw_source, dashboard_dir / "sw.js")
 
     report_path = output_dir / "demo-report.json"
     nasa_json_path = nasa_dir / "osd569-cbc.json"
@@ -199,7 +209,7 @@ def build_site(destination: Path) -> Path:
         f"{summary['analyte_count']} analytes / "
         f"{summary['suspect_sample_count']} suspect sample"
     )
-    print("Browser assets verified: dashboard/index.html + dashboard/app.js")
+    print("Browser assets verified: dashboard/index.html + dashboard/app.js + dashboard/sw.js")
     print("Browser data paths verified: dashboard -> ../output and ../data/nasa")
     return target
 
