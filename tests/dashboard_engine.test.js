@@ -122,3 +122,9 @@ test('timestamps without an explicit timezone are rejected', function () {
     return issue.code === 'invalid_timestamp';
   }));
 });
+
+
+test('operational dashboard engine never loads the separate NASA research JSON', function () {
+  assert.equal(source.includes('osd569-cbc.json'), false);
+  assert.ok(source.includes('../output/demo-report.json'));
+});
