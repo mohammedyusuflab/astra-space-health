@@ -27,6 +27,18 @@
 - Historical OSDR measurements are displayed separately and do not enter the synthetic telemetry alert engine.
 - The source CSV's SHA-256 matches the pinned source checksum.
 
+## Website deployment preparation
+
+- [x] Static-site builder creates a root landing page, dashboard, generated synthetic report, and normalized NASA OSDR JSON.
+- [x] Builder validates the expected 40 synthetic observations, four personal baselines, two demonstration alerts, and OSD-569 dataset summary before completing.
+- [x] Manual GitHub Pages deployment workflow added; it deploys only from the main branch when explicitly started.
+- [x] CI workflow extended to build and verify the complete static website bundle.
+- [ ] Enable GitHub Pages in repository Settings with Source = GitHub Actions.
+- [ ] Run the first Pages deployment and verify the public site in a logged-out/private browser.
+- [ ] Capture the final browser walkthrough and add the verified public demo URL to the official Project form.
+
+The GitHub repository reports Pages as disabled at the time this release preparation was started. Therefore, the public website is not yet live and the target URLs in the submission draft are not yet verified.
+
 ## Verification status
 
 - GitHub Actions workflow run for PR #6 completed successfully: 20 tests passed and the OSDR JSON build completed.

@@ -59,6 +59,8 @@ ASTRA is an educational prototype, not a medical device. It does not diagnose, p
 - Run from the repository root: PYTHONPATH=src python -m astra --input data/synthetic/demo_telemetry.csv --baseline-start 2026-11-01T00:00:00Z --baseline-end 2026-11-07T23:59:00Z --json output/demo-report.json
 - Start local server: python -m http.server 8000
 - Open http://localhost:8000/dashboard/
+- Build the complete static website bundle with `python scripts/build_site.py`; output is written to `build/site/`.
+- After GitHub Pages is enabled and the manual deployment workflow succeeds, the expected public project URL is https://mohammedyusuflab.github.io/astra-space-health/ and the dashboard URL is https://mohammedyusuflab.github.io/astra-space-health/dashboard/. These target URLs must be tested anonymously before they are entered into the final competition form.
 
 ## AI tools and external resources
 See AI_DISCLOSURE.md and DATA_SOURCES.md. The AI assistant helped draft code and documentation; no generative AI model runs inside the ASTRA prototype.
