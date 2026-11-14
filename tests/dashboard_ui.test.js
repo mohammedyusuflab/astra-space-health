@@ -146,8 +146,8 @@ test('dashboard boots, renders demo data, accepts a manual reading and supports 
     '2026-11-01T08:00:00Z,TEST-01,resting_heart_rate,60,bpm,synthetic,test-sensor,,valid,1,calibration',
     '2026-11-02T08:00:00Z,TEST-01,resting_heart_rate,61,bpm,synthetic,test-sensor,,valid,2,calibration',
     '2026-11-03T08:00:00Z,TEST-01,resting_heart_rate,59,bpm,synthetic,test-sensor,,valid,3,calibration',
-    '2026-11-04T08:00:00Z,TEST-01,resting_heart_rate,80,bpm,synthetic,test-sensor,,valid,4,follow-up',
-    '2026-11-05T08:00:00Z,TEST-01,resting_heart_rate,82,bpm,synthetic,test-sensor,,valid,5,follow-up'
+    '2026-11-08T08:00:00Z,TEST-01,resting_heart_rate,80,bpm,synthetic,test-sensor,,valid,8,follow-up',
+    '2026-11-09T08:00:00Z,TEST-01,resting_heart_rate,82,bpm,synthetic,test-sensor,,valid,9,follow-up'
   ].join('\n');
   const fileInput = getElement('csv-file');
   await fileInput.handlers.change({
