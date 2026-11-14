@@ -53,6 +53,7 @@ Open the deployed site in an incognito/private browser window (logged out of Git
 - Export JSON and CSV and confirm both files contain the current result set.
 - Clear the operational workspace and confirm the NASA historical panel remains available and separate.
 - The observation log filters by search text and result state.
+- Mark a repeated alert as reviewed, confirm the acknowledgement is shown, then reopen it; the analysis result must remain unchanged.
 - The NASA research panel loads all five summary counts and both selectors.
 - C001 / White blood cell count shows the historical sample timeline.
 - C003 / Absolute neutrophils visibly marks the suspect L-92 sample and explains the data-quality flag.
