@@ -330,23 +330,43 @@
   function renderSelectors() {
     const metricSelect = $('#metric-filter');
     const astronautSelect = $('#astronaut-filter');
-    let metricCurrent = metricSelect.value, astronautCurrent = astronautSelect.value;
-    const metrics = Array.from(new Set(state.readings.map(function (r) { return r.metric; }))).sort();
-    const astronauts = Array.from(new Set(state.readings.map(function (r) { return r.astronaut_id; }))).sort();
-    if (metricCurrent === 'all' && metrics.length) {
-      metricCurrent = metrics.indexOf('sleep_duration') >= 0 ? 'sleep_duration' : metrics[0];
-    }
-    metricSelect.innerHTML = '<option value="all">All indicators</option>' +
-      metrics.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m.replaceAll('_', ' ')) + '</option>'; }).join('');
-    astronautSelect.innerHTML = '<option value="all">All crew IDs</option>' +
-      astronauts.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m) + '</option>'; }).join('');
+    const metricCurrent = metricSelect.value;
+    const astronautCurrent = astronautSelect.value;
+    const metricUnits = Array.from(new Map(state.readings.map(function (r) {
+      return [JSON.stringify([r.metric, r.unit]), { metric: r.metric, unit: r.unit }];
+    })).values()).sort(function (a, b) {
+      return a.metric.localeCompare(b.metric) || a.unit.localeCompare(b.unit);
+    });
+    const astronauts = Array.from(new Set(state.readings.map(function (r) {
+      return r.astronaut_id;
+    }))).sort();
+    const preferred = metricUnits.find(function (item) {
+      return item.metric === 'sleep_duration';
+    }) || metricUnits[0];
+    const preferredKey = preferred
+      ? JSON.stringify([preferred.metric, preferred.unit])
+      : 'all';
     const validMetricKeys = metricUnits.map(function (item) {
       return JSON.stringify([item.metric, item.unit]);
     });
-    if (validMetricKeys.indexOf(metricCurrent) >= 0 || metricCurrent === 'all') {
-      metricSelect.value = metricCurrent === 'all' ? preferredKey : metricCurrent;
-    }
-    if (astronauts.indexOf(astronautCurrent) >= 0 || astronautCurrent === 'all') astronautSelect.value = astronautCurrent;
+
+    metricSelect.innerHTML = '<option value="all">All indicators</option>' +
+      metricUnits.map(function (item) {
+        const key = JSON.stringify([item.metric, item.unit]);
+        return '<option value="' + esc(key) + '">' +
+          esc(item.metric.replaceAll('_', ' ') + ' (' + item.unit + ')') + '</option>';
+      }).join('');
+    astronautSelect.innerHTML = '<option value="all">All crew IDs</option>' +
+      astronauts.map(function (id) {
+        return '<option value="' + esc(id) + '">' + esc(id) + '</option>';
+      }).join('');
+
+    metricSelect.value = validMetricKeys.indexOf(metricCurrent) >= 0
+      ? metricCurrent
+      : preferredKey;
+    astronautSelect.value = astronauts.indexOf(astronautCurrent) >= 0
+      ? astronautCurrent
+      : 'all';
   }
 
   function renderChart() {
