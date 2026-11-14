@@ -65,6 +65,9 @@ class DashboardSmokeTests(unittest.TestCase):
         self.assertIn("DEMONSTRATION MODE", html)
         self.assertIn("not NASA telemetry", html)
         self.assertIn("Observation log", html)
+        self.assertIn("validPoints", html)
+        self.assertIn("Δ vs pre-flight mean", html)
+        self.assertIn("no in-flight CBC samples", html)
 
 
 if __name__ == "__main__":

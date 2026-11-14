@@ -132,7 +132,8 @@ fetch("../output/demo-report.json").then(r=>{if(!r.ok)throw Error("Report not fo
         svg+='<line x1="45" y1="'+y(preMean)+'" x2="660" y2="'+y(preMean)+'" stroke="#f1bd68" stroke-dasharray="7 6"/>';
         svg+='<text x="52" y="'+(y(preMean)-7)+'" fill="#f1bd68" font-size="11">Pre-flight mean '+fmt(preMean)+' · descriptive only</text>';
       }
-      svg+='<polyline fill="none" stroke="#65d4d0" stroke-width="3" points="'+values.map((v,i)=>x(i)+","+y(v)).join(" ")+'"/>';
+      const validPoints=selected.map((r,i)=>({reading:r,index:i})).filter(p=>p.reading.quality==="valid");
+      svg+='<polyline fill="none" stroke="#65d4d0" stroke-width="3" points="'+validPoints.map(p=>x(p.index)+","+y(p.reading.value)).join(" ")+'"/>';
       selected.forEach((r,i)=>{
         const fill=r.quality==="suspect"?"#f1bd68":"#65d4d0";
         svg+='<circle cx="'+x(i)+'" cy="'+y(r.value)+'" r="5" fill="'+fill+'"/>';
