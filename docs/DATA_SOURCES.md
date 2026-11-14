@@ -62,6 +62,25 @@ The GO Team's general resources guidance separately says Global Awards eligibili
 Challenge Navigator discussion: https://github.com/nasa/spaceapps/discussions/2025  
 GO Team resource requirement: https://github.com/nasa/spaceapps/discussions/1827
 
+## Challenge-resource lineage
+
+The Health Monitoring Software challenge Resources supplied for this project include NASA's **Ongoing HRP Research in Space** page:
+https://www.nasa.gov/hrp/ongoing-hrp-research/
+
+That NASA HRP page lists the **Omics Archive** as a past human investigation. NASA's Omics Archive reference describes collection of astronaut blood, urine, saliva, feces, and cells to study molecular changes during spaceflight:
+https://www.nasa.gov/reference/omics-archive/
+
+NASA's OSDR SpaceX Inspiration4 mission page lists OSD-569 among the mission's studies:
+https://osdr.nasa.gov/bio/repo/data/missions/SpaceX%20Inspiration4
+
+The challenge Navigator's November 13 answer to the Health Monitoring Software challenge also names NASA OSDR as a useful starting point for astronaut-health research data:
+https://github.com/nasa/spaceapps/discussions/2025
+
+This creates the documented source path used by ASTRA: the challenge's HRP research context -> NASA Omics Archive research context -> NASA OSDR's Inspiration4 mission collection -> OSD-569 CBC source file. In the submission, list the actual challenge Resources entry (“Ongoing HRP Research in Space”) and the specific OSDR dataset/file as distinct references. Do not claim the Resources page links directly to the OSD-569 file unless that direct link is visible in the live challenge submission interface.
+
+The GO Team's general guidance says Global Awards eligibility requires at least one NASA data source included with the selected challenge's Resources:
+https://github.com/nasa/spaceapps/discussions/1827
+
 ## Other references
 
 - NASA OSDR FAQ: https://science.nasa.gov/reference/osdr-faq/
