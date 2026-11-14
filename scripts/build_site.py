@@ -125,6 +125,7 @@ def build_site(destination: Path) -> Path:
         'id="csv-file"',
         'id="manual-form"',
         'id="run-analysis"',
+        'id="indicator-cards"',
         'id="download-json"',
         'id="download-csv"',
         'id="nasa-research"',
