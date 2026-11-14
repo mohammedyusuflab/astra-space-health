@@ -86,6 +86,27 @@ test('personal baselines are grouped by source provenance', function () {
   }).status, 'no_baseline');
 });
 
+test('calibration-window observations cannot trigger operational alerts', function () {
+  const samples = [
+    reading('2026-11-01T08:00:00Z', 10),
+    reading('2026-11-02T08:00:00Z', 10),
+    reading('2026-11-03T08:00:00Z', 10),
+    reading('2026-11-04T08:00:00Z', 100),
+    reading('2026-11-05T08:00:00Z', 100)
+  ];
+  const baselines = engine.buildBaselines(samples, {
+    start: Date.parse('2026-11-01T00:00:00Z'),
+    end: Date.parse('2026-11-05T23:59:59Z'),
+    minimumSamples: 3
+  });
+  const results = engine.analyze(samples, baselines, { threshold: 1, repeats: 2 });
+  assert.equal(results.filter(function (result) { return result.alert; }).length, 0);
+  assert.ok(results.every(function (result) { return result.status === 'within_baseline'; }));
+  assert.ok(results.every(function (result) {
+    return result.explanation.includes('calibration window');
+  }));
+});
+
 test('two consecutive deviations create a review alert, not a single deviation', function () {
   const samples = [
     reading('2026-11-01T08:00:00Z', 10),
