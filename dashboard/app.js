@@ -146,11 +146,22 @@
     if (row.some(function (v) { return String(v).trim() !== ''; })) rows.push(row);
     if (rows.length < 2) throw new Error('CSV needs a header row and at least one data row.');
     const headers = rows[0].map(function (h) { return String(h).replace(/^\uFEFF/, '').trim(); });
+    if (headers.some(function (header) { return !header; })) {
+      throw new Error('CSV contains an empty column name.');
+    }
+    if (new Set(headers).size !== headers.length) {
+      throw new Error('CSV contains duplicate column names.');
+    }
     const missing = REQUIRED.filter(function (field) { return headers.indexOf(field) < 0; });
     if (missing.length) throw new Error('CSV is missing required columns: ' + missing.join(', '));
-    return rows.slice(1).map(function (cells) {
+    return rows.slice(1).map(function (cells, index) {
+      if (cells.length > headers.length) {
+        throw new Error('CSV row ' + (index + 2) + ' contains more values than the header row.');
+      }
       const record = {};
-      headers.forEach(function (header, index) { record[header] = cells[index] == null ? '' : cells[index]; });
+      headers.forEach(function (header, column) {
+        record[header] = cells[column] == null ? '' : cells[column];
+      });
       return record;
     });
   }
@@ -174,14 +185,17 @@
         return sum + Math.pow(v - mean, 2);
       }, 0) / values.length;
       const first = group[0];
+      const chronological = group.slice().sort(function (a, b) {
+        return parseTime(a.timestamp) - parseTime(b.timestamp);
+      });
       baselines.push({
         astronaut_id: first.astronaut_id, metric: first.metric, unit: first.unit,
         source_type: first.source_type, source: first.source,
         source_reference: first.source_reference || '',
         mean: mean, standard_deviation: Math.sqrt(variance),
         sample_count: group.length,
-        period_start: group.map(function (r) { return r.timestamp; }).sort()[0],
-        period_end: group.map(function (r) { return r.timestamp; }).sort().slice(-1)[0]
+        period_start: chronological[0].timestamp,
+        period_end: chronological[chronological.length - 1].timestamp
       });
     });
     return baselines;
@@ -614,7 +628,13 @@
     event.preventDefault();
     const form = $('#manual-form');
     const data = new FormData(form);
-    const timestamp = new Date(String(data.get('timestamp'))).toISOString();
+    const localTimestamp = String(data.get('timestamp') || '');
+    const timestampDate = new Date(localTimestamp);
+    if (!localTimestamp || !Number.isFinite(timestampDate.getTime())) {
+      setNotice('Enter a valid observation date and time before adding this reading.', 'error');
+      return;
+    }
+    const timestamp = timestampDate.toISOString();
     const raw = {
       timestamp: timestamp,
       astronaut_id: data.get('astronaut_id'),
