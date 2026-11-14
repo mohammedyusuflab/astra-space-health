@@ -50,7 +50,7 @@ From the repository root:
 python -m http.server 8000
 \`\`\`
 
-Open http://localhost:8000/dashboard/ . The browser workspace loads the demonstration readings and supports manual observation entry, CSV import, configurable baseline windows, deviation thresholds, repeat-alert rules, searchable result logs, and JSON/CSV export. Analysis runs locally in the browser session; imported readings are not sent to a server.
+Open http://localhost:8000/dashboard/ . The browser workspace loads the demonstration readings and supports manual observation entry, CSV import, configurable baseline windows, deviation thresholds, repeat-alert rules, searchable result logs, and JSON/CSV export. Analysis runs locally in the browser session; imported readings are not sent to a server. The service worker caches the public application shell and demo/research datasets after the first successful online load so the dashboard can be reopened offline. User-entered operational readings remain in memory for the current session only and are not saved to browser storage.
 
 CSV import requires these columns: `timestamp`, `astronaut_id`, `metric`, `value`, `unit`, `source_type`, and `source`. Timestamps must include a timezone. Use `source_type=real` only with a traceable `source_reference`. NASA OSDR historical samples remain in their separate research panel and are not loaded into the operational telemetry dataset.
 
