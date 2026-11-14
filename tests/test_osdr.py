@@ -75,6 +75,15 @@ class OSDRDatasetTests(unittest.TestCase):
             loaded = json.loads(target.read_text(encoding="utf-8"))
             self.assertEqual(loaded["summary"], document["summary"])
 
+
+    def test_changed_source_file_is_rejected_by_checksum(self):
+        with tempfile.TemporaryDirectory() as folder:
+            changed = Path(folder) / "changed.csv"
+            original = DEFAULT_CSV.read_text(encoding="utf-8")
+            changed.write_text(original + "\\n", encoding="utf-8")
+            with self.assertRaisesRegex(OSDRDataError, "checksum mismatch"):
+                build_osd569_dataset(changed)
+
     def test_malformed_csv_is_rejected(self):
         with tempfile.TemporaryDirectory() as folder:
             bad = Path(folder) / "bad.csv"
