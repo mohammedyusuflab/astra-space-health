@@ -1,41 +1,27 @@
-# Proposed Architecture
+# ASTRA Architecture
 
-This document describes a future conceptual architecture. None of these components has been implemented, and no final data schema is defined.
+## Implemented flow
 
-## Conceptual flow
-
-The proposed flow keeps analysis independent from the interface or any method used to deliver results:
-
-1. **Synthetic data input** receives fictional-person readings and contextual information. It produces an input collection for validation.
-2. **Validation** checks the input for required values, acceptable forms, and completeness. It produces either validated readings or explicit validation issues. Missing or invalid data must not be interpreted as evidence that the person's condition is normal.
-3. **Baseline and change analysis** receives validated readings and the relevant personal history. It produces a personal reference and an assessment of differences from that reference. The baseline calculation and change rules remain open decisions.
-4. **Explainable result creation** receives assessed changes and produces structured results in which every observation or alert includes its reason and relevant comparison context.
-5. **Result presentation** receives those results and makes them understandable to the demo audience. A later phase may add an API and user interface, but presentation concerns must not control the analysis logic.
-
-Each boundary is conceptual. Input fields, output fields, thresholds, and storage choices will be defined only after the requirements are reviewed.
-
-## Separation of responsibilities
-
-The future analysis engine should contain validation, baseline calculation, change evaluation, and explanation rules without depending on a particular API, command-line tool, or graphical interface. Delivery components should consume analysis results rather than reproduce or alter the analysis rules. This allows a future presentation method to change without changing the meaning of a result.
+1. CSV input loads observations and provenance.
+2. Validation checks identifiers, timezone-aware timestamps, finite values, source type/reference, and quality.
+3. Baseline calculation groups by astronaut, metric, unit, and provenance and calculates mean and population standard deviation over an explicit calibration window.
+4. Deviation analysis compares later valid observations with the matching baseline.
+5. Alert evaluation requires repeated consecutive deviations.
+6. Explanation output contains baseline context, deviation score where defined, reason, and non-treatment review prompt.
+7. CLI/JSON output presents results without coupling the engine to a web interface.
 
 ## Repository structure
 
-Current files:
-
-```text
+```
 .
-├── .gitignore
-├── AGENTS.md
-├── LICENSE
-├── README.md
-└── docs
-    ├── ARCHITECTURE.md
-    └── SCOPE.md
+├── src/astra/
+├── data/synthetic/demo_telemetry.csv
+├── docs/
+└── tests/test_engine.py
 ```
 
-Possible future locations, not created in Task 01, are:
+## Boundaries
 
-- `src/` for the Python analysis engine; and
-- `tests/` for automated tests of validation and analysis behavior.
+The implementation does not include a database, API, graphical dashboard, authentication, live sensor integration, NASA data ingestion, real-time streaming, or deployment.
 
-These suggestions do not select a framework, database, cloud service, API design, interface technology, or final package layout.
+Synthetic and real data are explicitly separated. Real data requires traceable provenance.
