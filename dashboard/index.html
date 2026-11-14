@@ -42,6 +42,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,su
 @media(max-width:800px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:460px){.form-grid,.settings-grid{grid-template-columns:1fr}.workspace-actions .action-btn{flex:1 1 42%}#csv-file{max-width:100%}}
 
+
+.indicator-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px}
+.indicator-card{background:linear-gradient(145deg,#13243a,#0e1a2b);border:1px solid var(--line);border-radius:8px;padding:15px;min-width:0}
+.indicator-card h3{margin:0 0 6px;font-size:14px;font-weight:650;text-transform:capitalize}
+.indicator-card .crew{color:var(--muted);font-size:11px;margin-bottom:10px}
+.indicator-card .reading{font-size:27px;font-weight:700;letter-spacing:-.02em}
+.indicator-card .reference{font-size:12px;color:var(--muted);margin-top:7px}
+.indicator-card .detail{font-size:12px;color:var(--muted);margin-top:5px}
+.indicator-card .tag{display:inline-block;margin-top:10px}
+
 </style></head>
 <body><main>
 <header class="top"><div><div class="brand">ASTRA / FLIGHT HEALTH SYSTEMS</div><h1 class="title">Crew health overview</h1><div class="sub">Mission simulation · Astronaut ASTRA-01</div></div><div class="status">● DEMONSTRATION MODE</div></header>
@@ -125,6 +135,10 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,su
   <div class="metric"><small>Tracked indicators</small><strong>—</strong></div>
   <div class="metric"><small>Repeated-deviation alerts</small><strong>—</strong></div>
   <div class="metric"><small>Input validation issues</small><strong>—</strong></div>
+</section>
+<section class="section" aria-labelledby="indicator-heading">
+  <div class="research-head"><h2 id="indicator-heading">Current indicator snapshot</h2><span class="tag">LATEST VALIDATED READINGS</span></div>
+  <div class="indicator-grid" id="indicator-cards"><div class="empty">Load operational observations to view indicator status.</div></div>
 </section>
 <section class="layout section">
   <div class="panel">
