@@ -37,7 +37,7 @@
 - [ ] Run the first Pages deployment and verify the public site in a logged-out/private browser.
 - [ ] Capture the final browser walkthrough and add the verified public demo URL to the official Project form.
 
-The GitHub repository reports Pages as disabled at the time this release preparation was started. Therefore, the public website is not yet live and the target URLs in the submission draft are not yet verified.
+The GitHub repository reports Pages as disabled at the time this release preparation was completed. Therefore, the public website is not yet live and the target URLs in the submission draft are not yet verified.
 
 ## Verification status
 
