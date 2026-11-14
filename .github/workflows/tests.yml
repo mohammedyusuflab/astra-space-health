@@ -28,5 +28,8 @@ jobs:
         run: |
           test -s /tmp/astra-site/index.html
           test -s /tmp/astra-site/dashboard/index.html
+          test -s /tmp/astra-site/dashboard/app.js
+          grep -q 'id="run-analysis"' /tmp/astra-site/dashboard/index.html
+          grep -q 'id="csv-file"' /tmp/astra-site/dashboard/index.html
           test -s /tmp/astra-site/output/demo-report.json
           test -s /tmp/astra-site/data/nasa/osd569-cbc.json
