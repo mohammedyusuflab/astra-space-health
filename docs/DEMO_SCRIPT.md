@@ -1,25 +1,42 @@
-# ASTRA — Interactive Demo Walkthrough
+# ASTRA — Submission Demo Media
 
-**Format:** one continuous screen recording, 60–75 seconds, 16:9. Record the deployed public dashboard after the release workflow succeeds. Narration should be in English for the project submission, with captions if needed.
+## Recommended submission format
 
-| Time | Screen action | Narration |
-|---|---|---|
-| 0–7 s | Show ASTRA header and operational workspace. Point out the demonstration status and local processing note. | “ASTRA is an explainable astronaut health-monitoring software concept. It processes observations in the browser and keeps each data source traceable.” |
-| 7–18 s | Load the bundled demonstration data. Show the observation count, tracked indicators, sleep trend, personal baseline and repeated-deviation review queue. | “The workspace validates daily observations, establishes a personal reference from a configured calibration period, and identifies sustained deviations for human review.” |
-| 18–32 s | Add a new observation manually or import a prepared CSV. Press Run Analysis and show the updated log and queue. | “Operators can enter a reading or import a structured CSV, adjust the analysis window and demonstration settings, and rerun the analysis without sending the readings to a server.” |
-| 32–40 s | Show a single deviation versus a repeated alert, then export JSON or CSV. | “An isolated change is not treated as a repeated alert. Each result includes its baseline context, explanation, and suggested verification step.” |
-| 40–58 s | Scroll to NASA OSDR. Select C001 / White blood cell count, then C003 / Absolute neutrophils; show L-92 flagged suspect. | “A separate research panel presents historical NASA Inspiration4 CBC samples. The system preserves the suspect C003 L-92 source values and makes the data-quality warning visible.” |
-| 58–70 s | Hold on the OSDR citation and the system limitations. | “Historical research is not presented as live telemetry, and the statistical demonstration is not a clinical diagnosis or a validated flight-medicine rule.” |
+Use the prepared **7-slide presentation** when the Project form accepts a slide deck (maximum 7 slides). If submitting a video instead, keep it at or below 30 seconds and use the narration below. Do not submit the older 60–75 second walkthrough as the challenge demo media.
 
-## Recording checklist
-- Wait for the latest GitHub Pages deployment to complete successfully.
-- Open the public dashboard in a private/incognito browser window and confirm that both the operational workspace and the NASA research panel load.
-- Demonstrate at least one real interaction: manual entry or CSV import followed by **Run analysis**.
-- Include a repeated-deviation example and show the difference between a single deviation and an alert.
-- Show the export action and the separate NASA research view.
-- Select C003 / Absolute neutrophils and show the suspect L-92 quality flag.
+## 30-second video narration
+
+“ASTRA is an explainable astronaut health-monitoring software demonstrator. Its interactive workspace validates observations, builds personal baselines, and highlights repeated changes for human review. Users can enter readings or import CSV data, rerun the analysis, inspect trends, and export results locally in the browser. A separate panel presents historical NASA Inspiration4 blood-count research from OSDR OSD-569, with visible data-quality warnings. These samples are not in-flight telemetry. ASTRA is not a medical device and does not make clinical or flight-readiness decisions.”
+
+## Suggested 30-second screen sequence
+
+| Time | Screen action |
+|---|---|
+| 0–4 s | Show ASTRA dashboard and DEMONSTRATION MODE label. |
+| 4–10 s | Show indicator cards, personal baseline and review queue. |
+| 10–17 s | Add one observation or import CSV, then run analysis. |
+| 17–22 s | Show the updated log and JSON/CSV export control. |
+| 22–27 s | Switch to the separate NASA OSDR panel and show C003 / L-92 quality flag. |
+| 27–30 s | Hold on the NASA citation and limitations statement. |
+
+## Seven-slide presentation sequence
+
+1. ASTRA — title and one-sentence purpose.
+2. The problem — why raw observations need personal context and provenance.
+3. The solution — operational synthetic data and historical NASA research remain separate.
+4. How it works — ingest, validate, calibrate, compare, review.
+5. NASA data — OSDR OSD-569 facts, sample timeline, and limitations.
+6. Implementation — Python engine, interactive dashboard, tests, static deployment.
+7. Impact and boundaries — human review, no diagnosis, no live telemetry, no NASA endorsement.
+
+## Recording / presentation checklist
+
+- Use the prepared seven-slide deck or a video within the current official duration limit.
+- If using video, upload it to a public URL and test that URL in a private/incognito browser window.
 - Keep the DEMONSTRATION MODE and REAL NASA RESEARCH DATA labels visible in the relevant shots.
+- Show at least one actual interaction if recording the dashboard.
+- Show the separate NASA research view and the suspect C003 / L-92 quality flag.
 - Include the NASA OSDR citation and acknowledgement.
 - Do not describe the CBC data as in-flight measurements.
-- Do not imply a medical diagnosis, approved medical-device status, NASA endorsement, live sensor integration, or validated mission alert threshold.
-- Confirm the exact video/slide limit in the live 2026 Project Submission Guide and follow it.
+- Do not imply medical diagnosis, approved medical-device status, NASA endorsement, live sensor integration, or validated mission alert thresholds.
+- Follow the live 2026 Project Submission Guide and the exact media field instructions displayed in the team's Project form.
