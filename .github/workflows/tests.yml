@@ -31,7 +31,7 @@ jobs:
           test -s /tmp/astra-site/index.html
           test -s /tmp/astra-site/dashboard/index.html
           test -s /tmp/astra-site/dashboard/app.js
-          test -s /tmp/astra-site/dashboard/sw.js
+          test -s /tmp/astra-site/sw.js
           grep -q 'id="run-analysis"' /tmp/astra-site/dashboard/index.html
           grep -q 'id="csv-file"' /tmp/astra-site/dashboard/index.html
           test -s /tmp/astra-site/output/demo-report.json
