@@ -89,7 +89,7 @@ The 2-standard-deviation band and two-consecutive-observation rule in the synthe
 ## Submission materials
 
 - [English project submission draft](docs/SUBMISSION_DRAFT.md)
-- [30-second demo script and recording checklist](docs/DEMO_SCRIPT.md)
+- [Interactive demo walkthrough and recording checklist](docs/DEMO_SCRIPT.md)
 - [AI and tool-use disclosure](docs/AI_DISCLOSURE.md)
 - [NASA data sources and provenance](docs/DATA_SOURCES.md)
 
