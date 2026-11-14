@@ -91,7 +91,7 @@ def _landing_page() -> str:
 def build_site(destination: Path) -> Path:
     """Generate the synthetic report and stage every file the browser needs."""
     target = destination.expanduser().resolve()
-    if target == ROOT or ROOT in target.parents:
+    if target == ROOT or _is_relative_to(ROOT, target):
         raise ValueError("The output directory must not overwrite the repository.")
     if _is_relative_to(target, ROOT) and not _is_relative_to(target, ROOT / "build"):
         raise ValueError("Repository-local site output must stay inside build/.")
@@ -133,8 +133,12 @@ def build_site(destination: Path) -> Path:
     report = json.loads(report_path.read_text(encoding="utf-8"))
     nasa = json.loads(nasa_json_path.read_text(encoding="utf-8"))
 
-    if not report.get("results") or not report.get("baselines"):
-        raise RuntimeError("The synthetic telemetry report is empty or incomplete.")
+    if len(report.get("results", [])) != 40:
+        raise RuntimeError("Expected 40 synthetic observations in the deployment report.")
+    if len(report.get("baselines", [])) != 4:
+        raise RuntimeError("Expected four provenance-separated synthetic baselines.")
+    if len(report.get("alerts", [])) != 2:
+        raise RuntimeError("Expected two repeated-deviation demonstration alerts.")
     summary = nasa.get("summary", {})
     expected = {
         "record_count": 553,
