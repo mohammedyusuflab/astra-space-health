@@ -324,9 +324,12 @@
   function renderSelectors() {
     const metricSelect = $('#metric-filter');
     const astronautSelect = $('#astronaut-filter');
-    const metricCurrent = metricSelect.value, astronautCurrent = astronautSelect.value;
+    let metricCurrent = metricSelect.value, astronautCurrent = astronautSelect.value;
     const metrics = Array.from(new Set(state.readings.map(function (r) { return r.metric; }))).sort();
     const astronauts = Array.from(new Set(state.readings.map(function (r) { return r.astronaut_id; }))).sort();
+    if (metricCurrent === 'all' && metrics.length) {
+      metricCurrent = metrics.indexOf('sleep_duration') >= 0 ? 'sleep_duration' : metrics[0];
+    }
     metricSelect.innerHTML = '<option value="all">All indicators</option>' +
       metrics.map(function (m) { return '<option value="' + esc(m) + '">' + esc(m.replaceAll('_', ' ')) + '</option>'; }).join('');
     astronautSelect.innerHTML = '<option value="all">All crew IDs</option>' +
@@ -442,6 +445,11 @@
   function renderAll() {
     renderMetrics();
     renderSelectors();
+    const sources = Array.from(new Set(state.readings.map(function (r) {
+      return r.source_type + ' · ' + r.source;
+    })));
+    $('#provenance').textContent = sources.length ? sources.join('; ') :
+      'No operational dataset is currently loaded.';
     renderChart();
     renderAlerts();
     renderRows();
