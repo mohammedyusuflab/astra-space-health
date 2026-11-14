@@ -1,6 +1,6 @@
 # ASTRA — Astronaut Health Monitoring Prototype
 
-ASTRA is an educational astronaut-health monitoring prototype for the 2026 NASA Space Apps Challenge. It demonstrates how software can ingest health-indicator observations, compare them with an individual's personal baseline, explain changes, and prompt a review. The current runnable implementation uses a fictional astronaut and clearly labeled synthetic readings.
+ASTRA is an educational astronaut-health monitoring prototype for the 2026 NASA Space Apps Challenge. It ingests health-indicator observations, compares them with an individual's personal baseline, explains changes, and prompts a review. The included crew and readings are fictional synthetic demonstration data.
 
 > ASTRA is not a medical device, does not diagnose or recommend treatment, does not determine mission readiness, and is not a NASA product or endorsement.
 
@@ -10,14 +10,14 @@ ASTRA is an educational astronaut-health monitoring prototype for the 2026 NASA 
 - valid/missing/invalid/outlier quality handling
 - synthetic/real provenance with required references for real data
 - provenance-separated personal baselines
-- explainable deviation analysis
-- repeated-consecutive-deviation alerts
+- explainable deviation analysis and repeated-deviation alerts
 - CLI and JSON report generation
-- automated tests
+- Browser dashboard for trends, baselines, alerts, provenance, and observation history
+- Automated tests; Python standard library only
 
-No NASA dataset, NASA system, spacecraft sensor, or live telemetry feed is connected yet.
+**Data status:** the demo CSV is synthetic. No astronaut medical records, spacecraft sensors, live telemetry, or qualifying challenge-resource dataset is currently connected. Do not describe the demo readings as NASA data.
 
-## Run
+## Run the analysis
 
 Python 3.10+; no third-party dependencies.
 
@@ -29,17 +29,27 @@ PYTHONPATH=src python -m astra \
   --json output/demo-report.json
 ```
 
-Tests:
+## Open the dashboard
+
+After generating the report, start a local static server from the repository root:
+
+```bash
+python -m http.server 8000
+```
+
+Open http://localhost:8000/dashboard/ . The dashboard reads `output/demo-report.json`; it does not upload data to a server.
+
+## Tests
 
 ```bash
 PYTHONPATH=src python -m unittest discover -s tests -v
 ```
 
-## NASA context
+## NASA context and data integrity
 
 NASA Standard Measures describes human-spaceflight measurement domains including activity/light exposure, sleep, and cognition: https://www.nasa.gov/reference/standard-measures/
 
-The 2026 challenge requires a qualifying NASA data source from the selected challenge Resources for Global Awards eligibility. ASTRA has not integrated that source yet. See docs/CHALLENGE_BRIEF.md and docs/DATA_SOURCES.md.
+The challenge's official guidance states that Global Awards eligibility requires at least one NASA data source included in the selected challenge's Resources. The challenge page is https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/ . The challenge resources currently identified for ASTRA are references and research context; we have not yet verified a downloadable structured dataset from them. Accordingly, ASTRA does not claim to have met the qualifying-data requirement yet.
 
 ## Limitations
 
@@ -53,7 +63,6 @@ The default 2-standard-deviation band and two-consecutive-observation rule are d
 - docs/ARCHITECTURE.md
 - docs/ALGORITHM.md
 - docs/IMPLEMENTATION_STATUS.md
-- AGENTS.md
 
 ## License
 
