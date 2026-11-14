@@ -624,5 +624,13 @@
     $('#manual-source').value = 'ASTRA-browser-entry';
     loadDemo();
   }
+  if (typeof window !== 'undefined') {
+    window.ASTRA_ENGINE = {
+      parseCSV: parseCSV,
+      validateReading: validateReading,
+      buildBaselines: buildBaselines,
+      analyze: analyze
+    };
+  }
   document.addEventListener('DOMContentLoaded', init);
 })();
