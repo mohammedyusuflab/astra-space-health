@@ -32,5 +32,7 @@ def run_analysis(
         baselines,
         deviation_threshold=deviation_threshold,
         repeated_deviations_for_alert=repeated_deviations_for_alert,
+        calibration_start=baseline_start,
+        calibration_end=baseline_end,
     )
     return AnalysisReport(baselines, results, validation.issues)
