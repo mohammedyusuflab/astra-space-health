@@ -241,8 +241,10 @@
             suggested_action: 'Collect sufficient valid observations in a defined calibration period before comparing changes.'
           };
         } else if (
-          parseTime(reading.timestamp).getTime() >= parseTime(baseline.period_start).getTime() &&
-          parseTime(reading.timestamp).getTime() <= parseTime(baseline.period_end).getTime()
+          parseTime(reading.timestamp).getTime() >=
+            (Number.isFinite(settings.start) ? settings.start : parseTime(baseline.period_start).getTime()) &&
+          parseTime(reading.timestamp).getTime() <=
+            (Number.isFinite(settings.end) ? settings.end : parseTime(baseline.period_end).getTime())
         ) {
           consecutive = 0;
           result = {
