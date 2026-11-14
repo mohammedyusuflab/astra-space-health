@@ -341,6 +341,13 @@
   function renderChart() {
     const metric = $('#metric-filter').value;
     const astronaut = $('#astronaut-filter').value;
+    $('#chart-title').textContent = metric === 'all' ? 'Operational indicator trends' :
+      metric.replaceAll('_', ' ') + ' trend';
+    if (metric === 'all' && new Set(state.readings.map(function (r) { return r.metric; })).size > 1) {
+      $('#chart').innerHTML = '<text x="350" y="115" text-anchor="middle" fill="#91a4bc">Select one indicator to compare values with its personal baseline.</text>';
+      $('#chart-note').textContent = 'Different indicators use different units and should not share one numeric axis.';
+      return;
+    }
     let points = state.results.filter(function (r) {
       return r.reading.value !== null &&
         (metric === 'all' || r.reading.metric === metric) &&
@@ -354,22 +361,33 @@
       return;
     }
     const values = points.map(function (p) { return Number(p.reading.value); });
-    const min = Math.min.apply(null, values), max = Math.max.apply(null, values), span = max - min || 1;
-    const x = function (i) { return 48 + i * (610 / Math.max(points.length - 1, 1)); };
-    const y = function (v) { return 202 - ((v - min) / span) * 165; };
-    const paths = [];
-    paths.push('<line x1="45" y1="202" x2="660" y2="202" stroke="#34465d"/>');
-    paths.push('<line x1="45" y1="25" x2="45" y2="202" stroke="#34465d"/>');
     const segments = new Map();
     points.forEach(function (p) {
       const k = keyFor(p.reading);
       if (!segments.has(k)) segments.set(k, []);
       segments.get(k).push(p);
     });
-    let firstBaseline = null;
+    const baselineValues = points.map(function (p) { return p.baseline_mean; })
+      .filter(function (v) { return v !== null && v !== undefined; });
+    const scaleValues = values.concat(baselineValues);
+    const min = Math.min.apply(null, scaleValues), max = Math.max.apply(null, scaleValues), span = max - min || 1;
+    const x = function (i) { return 48 + i * (610 / Math.max(points.length - 1, 1)); };
+    const y = function (v) { return 202 - ((v - min) / span) * 165; };
+    const paths = [];
+    paths.push('<line x1="45" y1="202" x2="660" y2="202" stroke="#34465d"/>');
+    paths.push('<line x1="45" y1="25" x2="45" y2="202" stroke="#34465d"/>');
     segments.forEach(function (segment) {
       const base = segment[0].baseline_mean;
-      if (base !== null && base !== undefined && firstBaseline === null) firstBaseline = base;
+      const firstIndex = points.indexOf(segment[0]);
+      const lastIndex = points.indexOf(segment[segment.length - 1]);
+      if (base !== null && base !== undefined) {
+        const lineY = y(base);
+        paths.push('<line x1="' + x(firstIndex) + '" y1="' + lineY +
+          '" x2="' + Math.max(x(firstIndex) + 16, x(lastIndex)) + '" y2="' + lineY +
+          '" stroke="#f1bd68" stroke-dasharray="6 5"/>');
+        paths.push('<text x="' + x(firstIndex) + '" y="' + Math.max(16, lineY - 7) +
+          '" fill="#f1bd68" font-size="10">Baseline ' + esc(fmt(base)) + '</text>');
+      }
       paths.push('<polyline fill="none" stroke="#65d4d0" stroke-width="2.5" points="' +
         segment.map(function (p) { return x(points.indexOf(p)) + ',' + y(p.reading.value); }).join(' ') + '"/>');
       segment.forEach(function (p) {
@@ -380,13 +398,6 @@
           esc(STATUS_LABELS[p.status]) + '</title></circle>');
       });
     });
-    if (firstBaseline !== null) {
-      const lineY = y(firstBaseline);
-      paths.push('<line x1="45" y1="' + lineY + '" x2="660" y2="' + lineY +
-        '" stroke="#f1bd68" stroke-dasharray="7 6"/>');
-      paths.push('<text x="52" y="' + Math.max(16, lineY - 7) +
-        '" fill="#f1bd68" font-size="11">Baseline ' + esc(fmt(firstBaseline)) + '</text>');
-    }
     paths.push('<text x="45" y="225" fill="#91a4bc" font-size="11">' +
       esc(isoDate(points[0].reading.timestamp)) + '</text>');
     paths.push('<text x="660" y="225" text-anchor="end" fill="#91a4bc" font-size="11">' +
