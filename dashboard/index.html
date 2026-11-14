@@ -14,12 +14,154 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 
 .research-head{display:flex;justify-content:space-between;align-items:center;gap:16px}.research-head h2{margin-top:8px}.research-disclosure{max-width:900px}.research-stats{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0;color:var(--muted);font-size:13px}.research-stats span{border:1px solid var(--line);border-radius:5px;padding:7px 10px}.research-controls{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0}.research-controls label{display:grid;gap:6px;color:var(--muted);font-size:12px}.research-controls select{min-width:190px;background:#0b1728;color:var(--text);border:1px solid var(--line);border-radius:5px;padding:9px 12px;font:inherit}.research-chart-wrap{margin:0 0 14px}.research-table-wrap{overflow-x:auto}.research-quality{margin-top:12px}.quality-suspect{color:var(--amber)}.research-citation{font-size:12px;margin-top:18px}.research-citation a{color:var(--cyan)}.research-citation strong{color:var(--text)}@media(max-width:600px){.research-head{align-items:flex-start;flex-direction:column}.research-controls select{min-width:150px;max-width:100%}}
 
+
+.workspace{margin-top:24px}.workspace-actions{display:flex;gap:9px;flex-wrap:wrap;margin:16px 0}
+.action-btn{border:1px solid var(--line);background:#14263d;color:var(--text);padding:10px 13px;border-radius:5px;font:inherit;font-size:13px;cursor:pointer}
+.action-btn.primary{background:var(--cyan);border-color:var(--cyan);color:#06131c;font-weight:700}
+.action-btn.danger{border-color:#704b50;color:#ffc0c0}
+.action-btn:hover{filter:brightness(1.12)}.file-label{display:inline-flex;align-items:center;gap:8px}
+#csv-file{max-width:180px;color:var(--muted);font-size:12px}
+.notice-line{border-left:3px solid var(--cyan);padding:10px 12px;background:#102536;color:var(--text);font-size:13px;margin:12px 0}
+.notice-line.success{border-color:var(--cyan)}.notice-line.error{border-color:var(--red);background:#2a191e}.notice-line.info{border-color:var(--amber)}
+.workspace-meta{display:flex;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:12px}
+.workspace-meta span{border:1px solid var(--line);padding:6px 9px;border-radius:4px}
+.form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+.form-grid label,.settings-grid label{display:grid;gap:6px;color:var(--muted);font-size:12px}
+.form-grid input,.form-grid select,.settings-grid input,.settings-grid select,.toolbar input,.toolbar select{width:100%;min-width:0;background:#0b1728;color:var(--text);border:1px solid var(--line);border-radius:5px;padding:10px 11px;font:inherit;font-size:13px}
+details.entry-panel{margin-top:16px;border-top:1px solid var(--line);padding-top:13px}
+details.entry-panel summary{cursor:pointer;color:var(--cyan);font-weight:600}
+.settings-panel{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.settings-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;align-items:end}
+.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:12px 0}
+.toolbar input{max-width:260px}.toolbar select{max-width:230px}
+.state-warn{color:var(--amber);border-color:#725c36}.state-danger{color:#ff9999;border-color:#824b50}
+.issue-list{margin:8px 0;padding-left:20px;color:#e8c9a6;font-size:13px}.issue-list li{margin:7px 0}
+.section-note{color:var(--muted);font-size:12px;margin:8px 0}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+@media(max-width:800px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:460px){.form-grid,.settings-grid{grid-template-columns:1fr}.workspace-actions .action-btn{flex:1 1 42%}#csv-file{max-width:100%}}
+
 </style></head>
 <body><main>
 <header class="top"><div><div class="brand">ASTRA / FLIGHT HEALTH SYSTEMS</div><h1 class="title">Crew health overview</h1><div class="sub">Mission simulation · Astronaut ASTRA-01</div></div><div class="status">● DEMONSTRATION MODE</div></header>
-<section class="grid" id="stats"><div class="metric"><small>Observations</small><strong>—</strong></div><div class="metric"><small>Tracked indicators</small><strong>—</strong></div><div class="metric"><small>Active alerts</small><strong>—</strong></div><div class="metric"><small>Data quality issues</small><strong>—</strong></div></section>
-<section class="layout section"><div class="panel"><h2 id="chart-title">Indicator trend</h2><div class="legend"><span><i class="dot"></i>Recorded values</span><span>Baseline mean shown as dashed line</span></div><svg id="chart" class="chart" viewBox="0 0 700 240" role="img" aria-label="Indicator trend chart"></svg><div class="muted" id="chart-note"></div></div>
-<div class="panel"><h2>Review queue</h2><div id="alerts" class="empty">Loading report…</div><h2 style="margin-top:24px">Data provenance</h2><p class="muted" id="provenance">Loading…</p></div></section>
+<section class="section panel workspace" id="workspace">
+  <div class="research-head">
+    <div><div class="brand">OPERATIONAL WORKSPACE</div><h2>Load, enter and analyze crew observations</h2></div>
+    <span class="tag">LOCAL BROWSER PROCESSING</span>
+  </div>
+  <p class="muted">The analysis runs in this browser session. Imported operational records are kept separate from the NASA OSDR historical research panel below; no readings are uploaded to a server.</p>
+  <div class="workspace-actions">
+    <button class="action-btn primary" id="load-demo" type="button">Load demonstration data</button>
+    <label class="action-btn file-label">Import CSV <input id="csv-file" type="file" accept=".csv,text/csv"></label>
+    <button class="action-btn" id="download-template" type="button">CSV template</button>
+    <button class="action-btn" id="download-json" type="button">Export JSON</button>
+    <button class="action-btn" id="download-csv" type="button">Export analysis CSV</button>
+    <button class="action-btn danger" id="clear-data" type="button">Clear workspace</button>
+  </div>
+  <div id="workspace-notice" class="notice-line info" role="status" aria-live="polite">Preparing the demonstration workspace…</div>
+  <div class="workspace-meta"><span>Dataset: <strong id="source-label">Loading…</strong></span><span id="data-summary">Loading analysis summary…</span></div>
+
+  <details class="entry-panel" open>
+    <summary>Add a crew observation manually</summary>
+    <form id="manual-form">
+      <div class="form-grid">
+        <label>Timestamp (local time)
+          <input id="manual-timestamp" name="timestamp" type="datetime-local" required>
+        </label>
+        <label>Crew identifier
+          <input id="manual-astronaut" name="astronaut_id" type="text" value="ASTRA-01" maxlength="40" required>
+        </label>
+        <label>Indicator
+          <input name="metric" type="text" list="metric-options" placeholder="e.g. sleep_duration" required>
+          <datalist id="metric-options"><option value="sleep_duration"><option value="activity"><option value="light_exposure"><option value="cognitive_performance"><option value="heart_rate"><option value="oxygen_saturation"></datalist>
+        </label>
+        <label>Measured value
+          <input name="value" type="number" step="any" placeholder="e.g. 7.2">
+        </label>
+        <label>Unit
+          <input name="unit" type="text" placeholder="hours, bpm, %, steps…" required>
+        </label>
+        <label>Measurement quality
+          <select name="quality"><option value="valid">Valid</option><option value="missing">Missing</option><option value="invalid">Invalid</option><option value="outlier">Outlier — review</option></select>
+        </label>
+        <label>Source type
+          <select name="source_type"><option value="synthetic">Synthetic / demo</option><option value="real">Real operational source</option></select>
+        </label>
+        <label>Source name
+          <input id="manual-source" name="source" type="text" value="ASTRA-browser-entry" required>
+        </label>
+        <label>Source reference (required for real data)
+          <input name="source_reference" type="text" placeholder="Sensor record ID, URL, DOI…">
+        </label>
+        <label>Mission day (optional)
+          <input name="mission_day" type="number" min="1" step="1" placeholder="e.g. 39">
+        </label>
+        <label style="grid-column:span 2">Context note (optional)
+          <input name="context_note" type="text" placeholder="Workload, schedule, event or measurement context">
+        </label>
+      </div>
+      <button class="action-btn primary" type="submit">Add observation and rerun analysis</button>
+    </form>
+  </details>
+
+  <div class="settings-panel">
+    <h2>Analysis configuration</h2>
+    <p class="section-note">The personal baseline is calculated only from valid readings inside the selected calibration window, grouped by crew ID, indicator, unit and data provenance.</p>
+    <div class="settings-grid">
+      <label>Baseline start (UTC)<input id="baseline-start" type="date" value="2026-11-01"></label>
+      <label>Baseline end (UTC)<input id="baseline-end" type="date" value="2026-11-07"></label>
+      <label>Deviation threshold (standard deviations)<input id="threshold" type="number" min="0.1" max="10" step="0.1" value="2"></label>
+      <label>Consecutive deviations for alert<input id="repeat-count" type="number" min="2" max="20" step="1" value="2"></label>
+      <label>Minimum baseline observations<input id="minimum-samples" type="number" min="2" max="30" step="1" value="3"></label>
+    </div>
+    <button class="action-btn primary" id="run-analysis" type="button">Run analysis with these settings</button>
+  </div>
+</section>
+
+<section class="grid" id="stats">
+  <div class="metric"><small>Operational observations</small><strong>—</strong></div>
+  <div class="metric"><small>Tracked indicators</small><strong>—</strong></div>
+  <div class="metric"><small>Repeated-deviation alerts</small><strong>—</strong></div>
+  <div class="metric"><small>Input validation issues</small><strong>—</strong></div>
+</section>
+<section class="layout section">
+  <div class="panel">
+    <div class="research-head"><h2 id="chart-title">Operational indicator trends</h2><span class="tag">LIVE SESSION ANALYSIS</span></div>
+    <div class="toolbar">
+      <label class="muted" for="metric-filter">Indicator</label><select id="metric-filter"><option value="all">All indicators</option></select>
+      <label class="muted" for="astronaut-filter">Crew ID</label><select id="astronaut-filter"><option value="all">All crew IDs</option></select>
+    </div>
+    <div class="legend"><span><i class="dot"></i>Within band</span><span style="color:var(--amber)">● Single deviation</span><span style="color:var(--red)">● Repeated alert</span><span>Dashed line = personal baseline</span></div>
+    <svg id="chart" class="chart" viewBox="0 0 700 240" role="img" aria-label="Operational health indicator trend chart"></svg>
+    <div class="muted" id="chart-note">Load observations to view trends.</div>
+  </div>
+  <div class="panel">
+    <h2>Review queue</h2><p class="section-note">Only repeated deviations under the configured demonstration rule appear here.</p>
+    <div id="alerts" class="empty">Loading analysis…</div>
+    <h2 style="margin-top:24px">Data provenance</h2><p class="muted" id="provenance">Operational readings are processed locally in this browser session.</p>
+  </div>
+</section>
+<section class="section panel">
+  <div class="research-head"><h2>Operational observation log</h2><span class="tag">SORTED BY MOST RECENT</span></div>
+  <div class="toolbar">
+    <input id="log-search" type="search" placeholder="Search crew, indicator or source" aria-label="Search observation log">
+    <select id="status-filter" aria-label="Filter observation status">
+      <option value="all">All result states</option>
+      <option value="within_baseline">Within baseline</option>
+      <option value="deviation">Single deviation</option>
+      <option value="repeated_deviation">Repeated deviation</option>
+      <option value="no_baseline">No baseline</option>
+      <option value="missing_or_unusable">Missing / unusable</option>
+    </select>
+    <span class="muted" id="log-count"></span>
+  </div>
+  <div style="overflow-x:auto"><table><thead><tr><th>Date (UTC)</th><th>Crew ID</th><th>Indicator</th><th>Value</th><th>Analysis state</th><th>Data source</th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+<section class="section panel">
+  <h2>Input validation report</h2>
+  <p class="section-note">Rows that fail required-field, timestamp, value or provenance checks are not silently treated as normal readings.</p>
+  <div id="issues" class="empty">No validation report yet.</div>
+</section>
 <section class="section panel"><h2>Observation log</h2><div style="overflow-x:auto"><table><thead><tr><th>Mission day</th><th>Indicator</th><th>Value</th><th>Status</th><th>Source</th></tr></thead><tbody id="rows"></tbody></table></div></section>
 
 <section class="section panel" id="nasa-research">
@@ -47,36 +189,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 
 <footer class="foot">ASTRA is an educational prototype, not a medical device. Alerts are statistical demonstrations, not clinical thresholds or flight rules. Synthetic readings are fictional and are not NASA telemetry.</footer>
 </main>
-<script>
-const fmt=v=>Number(v).toLocaleString(undefined,{maximumFractionDigits:2});
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function render(data){
- const results=data.results||[], baselines=data.baselines||[], alerts=results.filter(x=>x.alert), issues=data.validation_issues||[];
- const metrics=[...new Set(results.map(x=>x.reading.metric))];
- document.querySelector("#stats").innerHTML=[[results.length,"Observations"],[metrics.length,"Tracked indicators"],[alerts.length,"Active alerts"],[issues.length,"Data quality issues"]].map(([n,l])=>'<div class="metric"><small>'+l+'</small><strong>'+n+'</strong></div>').join("");
- const sources=[...new Set(results.map(x=>x.reading.source_type+" · "+x.reading.source))];
- document.querySelector("#provenance").textContent=sources.join("; ")||"No source metadata.";
- const queue=document.querySelector("#alerts");
- queue.innerHTML=alerts.length?alerts.map(a=>'<div class="alert"><b>'+esc(a.reading.metric.replaceAll("_"," "))+'</b><div>'+esc(a.explanation)+'</div><div class="muted">Day '+esc(a.reading.mission_day)+' · '+esc(a.suggested_action)+'</div></div>').join(""):'<div class="empty">No repeated-deviation alerts in this report.</div>';
- const tbody=document.querySelector("#rows");
- tbody.innerHTML=results.slice().reverse().map(r=>'<tr><td>'+esc(r.reading.mission_day??"—")+'</td><td>'+esc(r.reading.metric.replaceAll("_"," "))+'</td><td>'+esc(r.reading.value??"—")+' '+esc(r.reading.unit)+'</td><td><span class="tag">'+esc(r.status)+'</span></td><td>'+esc(r.reading.source_type)+'</td></tr>').join("");
- const metric=metrics.includes("sleep_duration")?"sleep_duration":metrics[0];
- const points=results.filter(r=>r.reading.metric===metric&&r.reading.value!==null).sort((a,b)=>a.reading.timestamp.localeCompare(b.reading.timestamp));
- document.querySelector("#chart-title").textContent=metric?metric.replaceAll("_"," ")+" trend":"Indicator trend";
- if(!points.length){document.querySelector("#chart").innerHTML="";return;}
- const values=points.map(p=>Number(p.reading.value)), base=baselines.find(b=>b.metric===metric&&b.source_type===points[0].reading.source_type&&b.source===points[0].reading.source);
- const min=Math.min(...values,base?base.mean:Infinity),max=Math.max(...values,base?base.mean:-Infinity),span=max-min||1;
- const y=v=>205-(v-min)/span*170,x=i=>45+i*(610/Math.max(points.length-1,1));
- let svg='<line x1="45" y1="205" x2="660" y2="205" stroke="#34465d"/><line x1="45" y1="25" x2="45" y2="205" stroke="#34465d"/>';
- if(base){const yy=y(base.mean);svg+='<line x1="45" y1="'+yy+'" x2="660" y2="'+yy+'" stroke="#f1bd68" stroke-dasharray="7 6"/><text x="50" y="'+(yy-7)+'" fill="#f1bd68" font-size="11">Baseline '+fmt(base.mean)+' '+esc(base.unit)+'</text>';}
- svg+='<polyline fill="none" stroke="#65d4d0" stroke-width="3" points="'+values.map((v,i)=>x(i)+","+y(v)).join(" ")+'"/>';
- values.forEach((v,i)=>{svg+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="4" fill="#65d4d0"/>';});
- svg+='<text x="45" y="229" fill="#91a4bc" font-size="11">Day '+esc(points[0].reading.mission_day??"")+'</text><text x="660" y="229" text-anchor="end" fill="#91a4bc" font-size="11">Day '+esc(points[points.length-1].reading.mission_day??"")+'</text>';
- document.querySelector("#chart").innerHTML=svg;
- document.querySelector("#chart-note").textContent=base?"Personal reference baseline: "+fmt(base.mean)+" "+base.unit+".":"No matching baseline available for this series.";
-}
-fetch("../output/demo-report.json").then(r=>{if(!r.ok)throw Error("Report not found. Generate output/demo-report.json first.");return r.json();}).then(render).catch(e=>{document.querySelector("#alerts").textContent=e.message;document.querySelector("#provenance").textContent="Report unavailable.";});
-</script>
+<script src="./app.js" defer></script>
 <script>
 (async function loadNasaResearch(){
   const stats=document.querySelector("#nasa-stats");
