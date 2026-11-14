@@ -114,7 +114,12 @@ test('calibration-window observations cannot trigger operational alerts', functi
     end: Date.parse('2026-11-05T23:59:59Z'),
     minimumSamples: 3
   });
-  const results = engine.analyze(samples, baselines, { threshold: 1, repeats: 2 });
+  const results = engine.analyze(samples, baselines, {
+    threshold: 1,
+    repeats: 2,
+    start: Date.parse('2026-11-01T00:00:00Z'),
+    end: Date.parse('2026-11-05T23:59:59Z')
+  });
   assert.equal(results.filter(function (result) { return result.alert; }).length, 0);
   assert.ok(results.every(function (result) { return result.status === 'within_baseline'; }));
   assert.ok(results.every(function (result) {
