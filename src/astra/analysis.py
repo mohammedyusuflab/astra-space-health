@@ -15,12 +15,21 @@ def analyze_readings(
     *,
     deviation_threshold: float = 2.0,
     repeated_deviations_for_alert: int = 2,
+    calibration_start: datetime | None = None,
+    calibration_end: datetime | None = None,
 ) -> tuple[AnalysisResult, ...]:
     """Compare readings with personal baselines; no medical thresholds are used."""
     if not math.isfinite(deviation_threshold) or deviation_threshold <= 0:
         raise ValueError("deviation_threshold must be a finite number greater than zero")
     if repeated_deviations_for_alert < 2:
         raise ValueError("repeated_deviations_for_alert must be at least 2")
+    if (calibration_start is None) != (calibration_end is None):
+        raise ValueError("calibration_start and calibration_end must be supplied together")
+    if calibration_start is not None and calibration_end is not None:
+        if calibration_start.tzinfo is None or calibration_end.tzinfo is None:
+            raise ValueError("calibration window boundaries must be timezone-aware")
+        if calibration_end < calibration_start:
+            raise ValueError("calibration_end must be on or after calibration_start")
 
     baseline_index = {
         (item.astronaut_id, item.metric, item.unit, item.source_type, item.source, item.source_reference): item
@@ -60,7 +69,12 @@ def analyze_readings(
 
             # Calibration observations define the personal reference; they are not
             # operational follow-up readings and must never trigger alerts.
-            if baseline.period_start <= reading.timestamp <= baseline.period_end:
+            in_calibration = (
+                calibration_start <= reading.timestamp <= calibration_end
+                if calibration_start is not None and calibration_end is not None
+                else baseline.period_start <= reading.timestamp <= baseline.period_end
+            )
+            if in_calibration:
                 consecutive = 0
                 output.append(AnalysisResult(
                     reading=reading, status=ResultStatus.WITHIN_BASELINE,
