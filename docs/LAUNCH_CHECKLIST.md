@@ -45,7 +45,7 @@ Open the deployed site in an incognito/private browser window (logged out of Git
 
 - The root page loads and the **Open ASTRA dashboard** link works.
 - The dashboard header shows **DEMONSTRATION MODE** and the operational workspace is visible.
-- Bundled demo data load as 40 observations with four baselines and two repeated-deviation demonstration alerts.
+- Bundled demo data load as 60 observations across six indicators, with six personal baselines and two repeated-deviation demonstration alerts.
 - Change the baseline dates/threshold/repeat count and press **Run analysis**; the metrics, chart, review queue and log update.
 - Add one valid manual observation; it appears in the log and the analysis reruns.
 - Import the downloaded CSV template after filling at least three valid calibration readings and subsequent readings; verify baseline and result states.
