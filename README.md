@@ -91,6 +91,24 @@ The 2-standard-deviation band and two-consecutive-observation rule in the synthe
 - [AI and tool-use disclosure](docs/AI_DISCLOSURE.md)
 - [NASA data sources and provenance](docs/DATA_SOURCES.md)
 
+## Public browser demo and deployment
+
+Build the complete static website bundle from the repository root:
+
+```bash
+python scripts/build_site.py
+```
+
+The builder generates the synthetic report, validates the bundled NASA OSDR OSD-569 dataset, and stages the landing page, dashboard, and JSON data under `build/site/`. The bundle is self-contained and does not require a Python server at runtime.
+
+To publish, first set the repository's **Settings → Pages → Source** to **GitHub Actions**, then run the **Deploy ASTRA website** workflow manually from the Actions tab on the `main` branch. The public site is not live until that workflow succeeds. See [docs/LAUNCH_CHECKLIST.md](docs/LAUNCH_CHECKLIST.md) for deployment, anonymous browser checks, and competition handoff.
+
+Expected project URL after a successful deployment:
+https://mohammedyusuflab.github.io/astra-space-health/
+
+Expected dashboard URL:
+https://mohammedyusuflab.github.io/astra-space-health/dashboard/
+
 ## License
 
 The software license applies to ASTRA code. It does not supersede the source terms for NASA OSDR data.
