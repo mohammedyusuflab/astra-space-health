@@ -51,6 +51,8 @@ Open the deployed site in an incognito/private browser window (logged out of Git
 - Import the downloaded CSV template after filling at least three valid calibration readings and subsequent readings; verify baseline and result states.
 - Import a malformed CSV and verify row/field issues are reported rather than silently accepted.
 - Export JSON and CSV and confirm both files contain the current result set.
+- After the first successful online load, confirm the status badge reads **OFFLINE SHELL READY**; then use browser offline mode and reload the dashboard to verify the shell, demo JSON and NASA JSON are available from cache.
+- Confirm imported/manual readings are session-only and are not expected to survive a page reload; only public application assets and datasets are cached.
 - Clear the operational workspace and confirm the NASA historical panel remains available and separate.
 - The observation log filters by search text and result state.
 - Mark a repeated alert as reviewed, confirm the acknowledgement is shown, then reopen it; the analysis result must remain unchanged.
