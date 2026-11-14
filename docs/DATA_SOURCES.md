@@ -51,7 +51,7 @@ NASA OSDR describes access to public data and publishes data-use terms. This rep
 
 ## Synthetic operational demo telemetry
 
-\`data/synthetic/demo_telemetry.csv\` contains 40 synthetic observations for fictional astronaut ASTRA-01. These records demonstrate timestamped daily telemetry, personal baselines, and repeated-deviation review prompts. They are not NASA measurements.
+\`data/synthetic/demo_telemetry.csv\` contains 60 synthetic observations for fictional astronaut ASTRA-01. These records demonstrate timestamped daily telemetry for sleep duration, activity, light exposure, cognitive performance, resting heart rate, and oxygen saturation. They support personal-baseline calculations and repeated-deviation review prompts. All 60 records are fictional, synthetic examples—not measurements from NASA, a real astronaut, or onboard sensors. Values are illustrative and are not clinical thresholds.
 
 ## Challenge-resource context
 
