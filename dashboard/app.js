@@ -365,10 +365,10 @@
     });
   }
 
-  function recalculate() {
-    const settings = settingsFromUI();
-    state.baselines = buildBaselines(state.readings, settings);
-    state.results = analyze(state.readings, state.baselines, settings);
+  function recalculate(settings) {
+    const activeSettings = settings || settingsFromUI();
+    state.baselines = buildBaselines(state.readings, activeSettings);
+    state.results = analyze(state.readings, state.baselines, activeSettings);
     renderAll();
   }
 
@@ -629,6 +629,7 @@
   }
 
   function loadReadings(rawRows, sourceLabel) {
+    const settings = settingsFromUI();
     const accepted = [], issues = [];
     rawRows.forEach(function (row, index) {
       const checked = validateReading(row, index + 2);
@@ -640,35 +641,39 @@
     state.reviewed.clear();
     state.excludedReal = 0;
     state.sourceLabel = sourceLabel;
-    recalculate();
+    recalculate(settings);
   }
 
   async function loadDemo() {
     setNotice('Loading bundled demonstration readings…', 'info');
     try {
+      const settings = settingsFromUI();
       const response = await fetch('../output/demo-report.json', { cache: 'no-store' });
       if (!response.ok) throw new Error('Bundled report could not be loaded (HTTP ' + response.status + ').');
       const report = await response.json();
       if (!Array.isArray(report.results)) throw new Error('Bundled report has no results array.');
-      const readings = report.results.map(function (r) { return r.reading; });
-      state.readings = readings.map(normalizeReading);
+      const readings = report.results.map(function (r) { return normalizeReading(r.reading); });
+      const baselines = buildBaselines(readings, settings);
+      const results = analyze(readings, baselines, settings);
+      state.readings = readings;
+      state.baselines = baselines;
+      state.results = results;
       state.issues = (report.validation_issues || []).slice();
       state.sourceLabel = 'Bundled demonstration dataset';
       state.excludedReal = 0;
       state.reviewed.clear();
-      recalculate();
+      renderAll();
       setNotice('Demonstration dataset loaded. You can add readings, import a CSV, change baseline settings, and rerun the analysis.', 'success');
     } catch (error) {
-      state.readings = [];
-      state.issues = [];
-      state.sourceLabel = 'No dataset loaded';
-      recalculate();
-      setNotice(error.message + ' Use the CSV importer or manual entry to load observations.', 'error');
+      setNotice(error.message + ' The current workspace data were left unchanged.', 'error');
     }
   }
 
   function addManualReading(event) {
     event.preventDefault();
+    let settings;
+    try { settings = settingsFromUI(); }
+    catch (error) { setNotice(error.message, 'error'); return; }
     const form = $('#manual-form');
     const data = new FormData(form);
     const localTimestamp = String(data.get('timestamp') || '');
@@ -699,7 +704,7 @@
     state.readings.push(checked.reading);
     checked.errors.forEach(function (issue) { state.issues.push(issue); });
     state.sourceLabel = 'Browser workspace · manually extended dataset';
-    recalculate();
+    recalculate(settings);
     form.reset();
     $('#manual-timestamp').value = localDateTimeValue(new Date());
     $('#manual-astronaut').value = 'ASTRA-01';
