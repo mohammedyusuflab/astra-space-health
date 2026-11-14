@@ -77,9 +77,9 @@ class AnalysisTests(unittest.TestCase):
     def setUpClass(cls):
         cls.demo = Path(__file__).parents[1] / "data" / "synthetic" / "demo_telemetry.csv"
 
-    def test_demo_creates_four_baselines_and_sleep_alerts(self):
+    def test_demo_creates_six_baselines_and_sleep_alerts(self):
         report = run_analysis(self.demo, baseline_start=BASELINE_START, baseline_end=BASELINE_END)
-        self.assertEqual(len(report.baselines), 4)
+        self.assertEqual(len(report.baselines), 6)
         self.assertEqual(len(report.validation_issues), 0)
         self.assertEqual(len(report.alerts), 2)
         self.assertTrue(all(a.reading.metric == "sleep_duration" for a in report.alerts))
