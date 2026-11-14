@@ -58,6 +58,7 @@ CSV import requires these columns: `timestamp`, `astronaut_id`, `metric`, `value
 
 \`\`\`bash
 PYTHONPATH=src python -m unittest discover -s tests -v
+node --test tests/dashboard_*.test.js
 \`\`\`
 
 GitHub Actions runs the Python unit suite, Node.js tests for the browser analysis engine, JavaScript syntax checks when Node.js is available, and a complete static-site build on pushes and pull requests.
