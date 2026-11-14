@@ -34,9 +34,9 @@ def _landing_page() -> str:
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="ASTRA is an explainable astronaut health-monitoring prototype with separate synthetic telemetry and NASA historical research views.">
+  <meta name="description" content="ASTRA is an functional astronaut health-monitoring software demonstrator with separate synthetic telemetry and NASA historical research views.">
   <meta name="theme-color" content="#08111f">
-  <title>ASTRA | Astronaut Health Monitoring Prototype</title>
+  <title>ASTRA | Astronaut Health Monitoring System</title>
   <style>
     :root{color-scheme:dark;--bg:#08111f;--panel:#101d30;--line:#24364e;--muted:#a2b3c8;--text:#edf4fc;--cyan:#65d4d0;--amber:#f1bd68}
     *{box-sizing:border-box}
@@ -63,7 +63,7 @@ def _landing_page() -> str:
   <main>
     <div class="brand">ASTRA / FLIGHT HEALTH SYSTEMS</div>
     <h1>Context before alarms.</h1>
-    <p class="lead">An explainable astronaut health-monitoring prototype that demonstrates personal baselines, sustained-deviation review prompts, and a separately cited view of historical NASA astronaut research data.</p>
+    <p class="lead">A functional competition software demonstrator for astronaut health monitoring, with personal baselines, sustained-deviation review prompts, and a separately cited view of historical NASA astronaut research data.</p>
     <div class="actions">
       <a class="primary" href="./dashboard/">Open ASTRA dashboard</a>
       <a class="secondary" href="https://github.com/mohammedyusuflab/astra-space-health" target="_blank" rel="noopener">Source code on GitHub</a>
@@ -80,7 +80,7 @@ def _landing_page() -> str:
         <p>Inspiration4 blood-count measurements are presented as retrospective research, with relative sample dates and visible data-quality context. They are not in-flight telemetry.</p>
       </article>
     </section>
-    <div class="notice">ASTRA is an educational prototype, not a medical device or NASA product. It does not diagnose, prescribe treatment, determine mission readiness, or connect to live spacecraft sensors.</div>
+    <div class="notice">ASTRA is a competition software demonstrator, not a clinically validated or certified medical device, and is not a NASA product. It does not diagnose, prescribe treatment, determine mission readiness, or connect to live spacecraft sensors.</div>
     <footer>NASA OSDR acknowledgement: “Data are courtesy of the NASA Open Science Data Repository.” Dataset: OSD-569 · DOI 10.26030/e0rx-sh52.</footer>
   </main>
 </body>
