@@ -107,12 +107,38 @@ def build_site(destination: Path) -> Path:
     nasa_dir.mkdir(parents=True)
 
     dashboard_source = ROOT / "dashboard" / "index.html"
+    dashboard_app_source = ROOT / "dashboard" / "app.js"
     if not dashboard_source.is_file():
         raise FileNotFoundError(f"Dashboard file not found: {dashboard_source}")
+    if not dashboard_app_source.is_file():
+        raise FileNotFoundError(f"Dashboard application script not found: {dashboard_app_source}")
     if not DEMO_CSV.is_file() or not NASA_CSV.is_file():
         raise FileNotFoundError("A required demo or NASA OSDR source CSV is missing.")
 
+    dashboard_html = dashboard_source.read_text(encoding="utf-8")
+    required_controls = (
+        'id="load-demo"',
+        'id="csv-file"',
+        'id="manual-form"',
+        'id="run-analysis"',
+        'id="download-json"',
+        'id="download-csv"',
+        'id="nasa-research"',
+        'src="./app.js"',
+    )
+    missing_controls = [item for item in required_controls if item not in dashboard_html]
+    if missing_controls:
+        raise RuntimeError(f"Dashboard is missing required interactive elements: {missing_controls}")
+
+    if shutil.which("node"):
+        subprocess.run(
+            ["node", "--check", str(dashboard_app_source)],
+            cwd=ROOT,
+            check=True,
+        )
+
     shutil.copy2(dashboard_source, dashboard_dir / "index.html")
+    shutil.copy2(dashboard_app_source, dashboard_dir / "app.js")
 
     report_path = output_dir / "demo-report.json"
     nasa_json_path = nasa_dir / "osd569-cbc.json"
@@ -171,6 +197,7 @@ def build_site(destination: Path) -> Path:
         f"{summary['analyte_count']} analytes / "
         f"{summary['suspect_sample_count']} suspect sample"
     )
+    print("Browser assets verified: dashboard/index.html + dashboard/app.js")
     print("Browser data paths verified: dashboard -> ../output and ../data/nasa")
     return target
 
