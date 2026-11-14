@@ -30,6 +30,20 @@
   function isoDate(value) {
     return String(value || '').slice(0, 10);
   }
+  function localDateTimeValue(date) {
+    const value = date instanceof Date ? date : new Date(date);
+    if (!Number.isFinite(value.getTime())) throw new Error('Cannot format an invalid local date/time.');
+    const pad = function (part) { return String(part).padStart(2, '0'); };
+    return value.getFullYear() + '-' + pad(value.getMonth() + 1) + '-' +
+      pad(value.getDate()) + 'T' + pad(value.getHours()) + ':' + pad(value.getMinutes());
+  }
+  function csvCell(value) {
+    let text = String(value == null ? '' : value);
+    if (typeof value === 'string' && /^[\u0000-\u0020]*[=+\-@]/.test(text)) {
+      text = "'" + text;
+    }
+    return '"' + text.replace(/"/g, '""') + '"';
+  }
   function parseTime(value) {
     const date = new Date(String(value || '').trim());
     if (!Number.isFinite(date.getTime())) throw new Error('Timestamp is invalid.');
@@ -125,18 +139,23 @@
 
   function parseCSV(text) {
     const rows = [];
-    let row = [], cell = '', quoted = false;
+    let row = [], cell = '', quoted = false, quoteClosed = false;
     for (let i = 0; i < text.length; i += 1) {
       const c = text[i], next = text[i + 1];
       if (quoted) {
         if (c === '"' && next === '"') { cell += '"'; i += 1; }
-        else if (c === '"') quoted = false;
+        else if (c === '"') { quoted = false; quoteClosed = true; }
         else cell += c;
-      } else if (c === '"' && cell === '') quoted = true;
-      else if (c === ',') { row.push(cell); cell = ''; }
-      else if (c === '\n' || c === '\r') {
+      } else if (quoteClosed && c !== ',' && c !== '\n' && c !== '\r') {
+        throw new Error('CSV contains characters after a closing quote.');
+      } else if (c === '"') {
+        if (cell !== '') throw new Error('CSV contains a quote inside an unquoted field.');
+        quoted = true;
+      } else if (c === ',') {
+        row.push(cell); cell = ''; quoteClosed = false;
+      } else if (c === '\n' || c === '\r') {
         if (c === '\r' && next === '\n') i += 1;
-        row.push(cell); cell = '';
+        row.push(cell); cell = ''; quoteClosed = false;
         if (row.some(function (v) { return String(v).trim() !== ''; })) rows.push(row);
         row = [];
       } else cell += c;
@@ -308,20 +327,42 @@
     });
   }
 
+  function validateSettings(settings) {
+    const start = Number(settings.start);
+    const end = Number(settings.end);
+    const threshold = Number(settings.threshold);
+    const repeats = Number(settings.repeats);
+    const minimumSamples = Number(settings.minimumSamples);
+    if (!Number.isFinite(start) || !Number.isFinite(end)) {
+      throw new Error('Choose valid baseline start and end dates.');
+    }
+    if (end < start) throw new Error('Baseline end date must be on or after the start date.');
+    if (!Number.isFinite(threshold) || threshold < 0.1 || threshold > 10) {
+      throw new Error('Deviation threshold must be between 0.1 and 10 standard deviations.');
+    }
+    if (!Number.isInteger(repeats) || repeats < 2 || repeats > 20) {
+      throw new Error('Repeated deviations must be an integer between 2 and 20.');
+    }
+    if (!Number.isInteger(minimumSamples) || minimumSamples < 2 || minimumSamples > 30) {
+      throw new Error('Minimum baseline observations must be an integer between 2 and 30.');
+    }
+    return {
+      start: start, end: end, threshold: threshold,
+      repeats: repeats, minimumSamples: minimumSamples
+    };
+  }
+
   function settingsFromUI() {
     const startValue = $('#baseline-start').value;
     const endValue = $('#baseline-end').value;
     if (!startValue || !endValue) throw new Error('Choose both baseline dates.');
-    const start = Date.parse(startValue + 'T00:00:00Z');
-    const end = Date.parse(endValue + 'T23:59:59.999Z');
-    if (end < start) throw new Error('Baseline end date must be on or after the start date.');
-    const threshold = Number($('#threshold').value);
-    const repeats = Number($('#repeat-count').value);
-    const minimumSamples = Number($('#minimum-samples').value);
-    if (!Number.isFinite(threshold) || threshold <= 0) throw new Error('Deviation threshold must be greater than zero.');
-    if (!Number.isInteger(repeats) || repeats < 2) throw new Error('Repeated observations must be at least 2.');
-    if (!Number.isInteger(minimumSamples) || minimumSamples < 2) throw new Error('Minimum baseline samples must be at least 2.');
-    return { start: start, end: end, threshold: threshold, repeats: repeats, minimumSamples: minimumSamples };
+    return validateSettings({
+      start: Date.parse(startValue + 'T00:00:00Z'),
+      end: Date.parse(endValue + 'T23:59:59.999Z'),
+      threshold: $('#threshold').value,
+      repeats: $('#repeat-count').value,
+      minimumSamples: $('#minimum-samples').value
+    });
   }
 
   function recalculate() {
@@ -660,7 +701,7 @@
     state.sourceLabel = 'Browser workspace · manually extended dataset';
     recalculate();
     form.reset();
-    $('#manual-timestamp').value = new Date().toISOString().slice(0, 16);
+    $('#manual-timestamp').value = localDateTimeValue(new Date());
     $('#manual-astronaut').value = 'ASTRA-01';
     $('#manual-source').value = 'ASTRA-browser-entry';
     setNotice('Reading added and analysis rerun. Check its status in the observation log and review queue.', 'success');
@@ -688,11 +729,7 @@
       'consecutive_deviations', 'alert', 'reviewed', 'source_type', 'source',
       'source_reference', 'quality', 'mission_day', 'context_note'
     ];
-    function quote(v) {
-      const s = String(v == null ? '' : v);
-      return '"' + s.replace(/"/g, '""') + '"';
-    }
-    const lines = [columns.join(',')];
+    const lines = [columns.map(csvCell).join(',')];
     state.results.forEach(function (r) {
       const item = r.reading;
       const values = [
@@ -702,7 +739,7 @@
         item.source_type, item.source, item.source_reference, item.quality,
         item.mission_day, item.context_note
       ];
-      lines.push(values.map(quote).join(','));
+      lines.push(values.map(csvCell).join(','));
     });
     downloadFile('astra-analysis.csv', lines.join('\r\n'), 'text/csv;charset=utf-8');
   }
@@ -791,7 +828,7 @@
   function init() {
     wireEvents();
     registerOfflineShell();
-    $('#manual-timestamp').value = new Date().toISOString().slice(0, 16);
+    $('#manual-timestamp').value = localDateTimeValue(new Date());
     $('#manual-astronaut').value = 'ASTRA-01';
     $('#manual-source').value = 'ASTRA-browser-entry';
     loadDemo();
@@ -799,7 +836,10 @@
   if (typeof window !== 'undefined') {
     window.ASTRA_ENGINE = {
       parseCSV: parseCSV,
+      csvCell: csvCell,
+      localDateTimeValue: localDateTimeValue,
       validateReading: validateReading,
+      validateSettings: validateSettings,
       buildBaselines: buildBaselines,
       analyze: analyze
     };
