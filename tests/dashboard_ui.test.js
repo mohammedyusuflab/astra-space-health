@@ -140,4 +140,34 @@ test('dashboard boots, renders demo data, accepts a manual reading and supports 
   getElement('run-analysis').handlers.click();
   assert.equal(getElement('log-count').textContent, 'Showing 61 of 61 observations.');
   assert.match(getElement('workspace-notice').textContent, /Analysis completed/);
+
+  const importCsv = [
+    'timestamp,astronaut_id,metric,value,unit,source_type,source,source_reference,quality,mission_day,context_note',
+    '2026-11-01T08:00:00Z,TEST-01,resting_heart_rate,60,bpm,synthetic,test-sensor,,valid,1,calibration',
+    '2026-11-02T08:00:00Z,TEST-01,resting_heart_rate,61,bpm,synthetic,test-sensor,,valid,2,calibration',
+    '2026-11-03T08:00:00Z,TEST-01,resting_heart_rate,59,bpm,synthetic,test-sensor,,valid,3,calibration',
+    '2026-11-04T08:00:00Z,TEST-01,resting_heart_rate,80,bpm,synthetic,test-sensor,,valid,4,follow-up',
+    '2026-11-05T08:00:00Z,TEST-01,resting_heart_rate,82,bpm,synthetic,test-sensor,,valid,5,follow-up'
+  ].join('\n');
+  const fileInput = getElement('csv-file');
+  await fileInput.handlers.change({
+    target: {
+      files: [{ name: 'functional-test.csv', text: async function () { return importCsv; } }],
+      value: 'functional-test.csv'
+    }
+  });
+  assert.equal(getElement('log-count').textContent, 'Showing 5 of 5 observations.');
+  assert.match(getElement('alerts').innerHTML, /resting heart rate/);
+  assert.match(getElement('workspace-notice').textContent, /CSV imported/);
+
+  await fileInput.handlers.change({
+    target: {
+      files: [{ name: 'invalid.csv', text: async function () {
+        return 'timestamp,metric,value\n2026-11-01T08:00:00Z,sleep_duration,7';
+      } }],
+      value: 'invalid.csv'
+    }
+  });
+  assert.match(getElement('workspace-notice').textContent, /missing required columns/i);
+  assert.equal(getElement('log-count').textContent, 'Showing 5 of 5 observations.');
 });
