@@ -21,3 +21,12 @@ jobs:
         run: PYTHONPATH=src python -m unittest discover -s tests -v
       - name: Build NASA OSDR dataset JSON
         run: PYTHONPATH=src python -m astra.osdr --input data/nasa/osd569/LSDS-7_Complete_Blood_Count_CBC.upload_SUBMITTED.csv --output /tmp/osd569-cbc.json
+
+      - name: Build complete static website bundle
+        run: python scripts/build_site.py --output /tmp/astra-site
+      - name: Verify published website files
+        run: |
+          test -s /tmp/astra-site/index.html
+          test -s /tmp/astra-site/dashboard/index.html
+          test -s /tmp/astra-site/output/demo-report.json
+          test -s /tmp/astra-site/data/nasa/osd569-cbc.json
