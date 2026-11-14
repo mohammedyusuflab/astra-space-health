@@ -34,12 +34,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
     <label for="nasa-analyte">Blood indicator<select id="nasa-analyte"></select></label>
   </div>
   <div class="panel research-chart-wrap">
-    <div class="legend"><span><i class="dot"></i>Recorded sample</span><span>Dashed line = source reference midpoint (context only)</span></div>
+    <div class="legend"><span><i class="dot"></i>Recorded sample</span><span>Dashed line = crew pre-flight mean (descriptive only)</span></div>
     <svg id="nasa-chart" class="chart" viewBox="0 0 700 240" role="img" aria-label="Historical NASA Inspiration4 blood sample values"></svg>
     <p class="muted" id="nasa-chart-note"></p>
   </div>
   <div class="research-table-wrap">
-    <table><thead><tr><th>Sample point</th><th>Mission phase</th><th>Value</th><th>Lab reference interval</th><th>Data quality</th></tr></thead><tbody id="nasa-rows"></tbody></table>
+    <table><thead><tr><th>Sample point</th><th>Mission phase</th><th>Value</th><th>Lab reference interval</th><th>Δ vs pre-flight mean</th><th>Data quality</th></tr></thead><tbody id="nasa-rows"></tbody></table>
   </div>
   <div id="nasa-quality" class="research-quality"></div>
   <p class="muted research-citation">Acknowledgement: <strong>Data are courtesy of the NASA Open Science Data Repository.</strong> Dataset: <a href="https://osdr.nasa.gov/bio/repo/data/studies/OSD-569" target="_blank" rel="noopener">NASA OSDR OSD-569</a> · DOI: 10.26030/e0rx-sh52. Lab reference intervals are not mission limits, personalized baselines, or diagnostic thresholds. ASTRA preserves source values and flags a suspect sample instead of silently correcting it.</p>
@@ -110,22 +110,28 @@ fetch("../output/demo-report.json").then(r=>{if(!r.ok)throw Error("Report not fo
       const subject=subjectSelect.value, analyte=analyteSelect.value;
       const selected=records.filter(r=>r.subject_id===subject&&r.analyte_id===analyte)
         .sort((a,b)=>a.relative_day-b.relative_day);
-      if(!selected.length){tbody.innerHTML='<tr><td colspan="5">No observations for this combination.</td></tr>';chart.innerHTML="";return;}
+      if(!selected.length){tbody.innerHTML='<tr><td colspan="6">No observations for this combination.</td></tr>';chart.innerHTML="";return;}
+      const preflight=selected.filter(r=>r.phase==="pre-flight"&&r.quality==="valid");
+      const preMean=preflight.length?preflight.reduce((sum,r)=>sum+r.value,0)/preflight.length:null;
       tbody.innerHTML=selected.map(r=>{
         const range=fmt(r.reference_range_min)+"–"+fmt(r.reference_range_max)+" "+r.unit;
         const label=r.quality==="suspect"?' <span class="quality-suspect">(suspect)</span>':"";
-        return "<tr><td>"+r.timepoint+"</td><td>"+r.phase+"</td><td>"+fmt(r.value)+" "+r.unit+"</td><td>"+range+"</td><td>"+r.quality+label+"</td></tr>";
+        const delta=(preMean!==null&&r.quality==="valid")
+          ?((r.value-preMean>=0?"+":"")+fmt(r.value-preMean)+" "+r.unit+" ("+(100*(r.value-preMean)/Math.abs(preMean)).toFixed(1)+"%)")
+          :"Not calculated";
+        return "<tr><td>"+r.timepoint+"</td><td>"+r.phase+"</td><td>"+fmt(r.value)+" "+r.unit+"</td><td>"+range+"</td><td>"+delta+"</td><td>"+r.quality+label+"</td></tr>";
       }).join("");
       const values=selected.map(r=>r.value);
-      const low=Math.min(...values,...selected.map(r=>r.reference_range_min));
-      const high=Math.max(...values,...selected.map(r=>r.reference_range_max));
+      const low=Math.min(...values,...selected.map(r=>r.reference_range_min),preMean===null?Infinity:preMean);
+      const high=Math.max(...values,...selected.map(r=>r.reference_range_max),preMean===null?-Infinity:preMean);
       const span=(high-low)||1;
       const y=v=>202-(v-low)/span*165;
       const x=i=>54+i*(600/Math.max(selected.length-1,1));
       let svg='<line x1="45" y1="202" x2="660" y2="202" stroke="#34465d"/><line x1="45" y1="25" x2="45" y2="202" stroke="#34465d"/>';
-      const mid=(selected.reduce((s,r)=>s+(r.reference_range_min+r.reference_range_max)/2,0))/selected.length;
-      svg+='<line x1="45" y1="'+y(mid)+'" x2="660" y2="'+y(mid)+'" stroke="#f1bd68" stroke-dasharray="7 6"/>';
-      svg+='<text x="52" y="'+(y(mid)-7)+'" fill="#f1bd68" font-size="11">Average lab-range midpoint · context only</text>';
+      if(preMean!==null){
+        svg+='<line x1="45" y1="'+y(preMean)+'" x2="660" y2="'+y(preMean)+'" stroke="#f1bd68" stroke-dasharray="7 6"/>';
+        svg+='<text x="52" y="'+(y(preMean)-7)+'" fill="#f1bd68" font-size="11">Pre-flight mean '+fmt(preMean)+' · descriptive only</text>';
+      }
       svg+='<polyline fill="none" stroke="#65d4d0" stroke-width="3" points="'+values.map((v,i)=>x(i)+","+y(v)).join(" ")+'"/>';
       selected.forEach((r,i)=>{
         const fill=r.quality==="suspect"?"#f1bd68":"#65d4d0";
@@ -133,8 +139,12 @@ fetch("../output/demo-report.json").then(r=>{if(!r.ok)throw Error("Report not fo
         svg+='<text x="'+x(i)+'" y="222" text-anchor="middle" fill="#91a4bc" font-size="11">'+r.timepoint+'</text>';
       });
       chart.innerHTML=svg;
+      const latestPost=selected.filter(r=>r.phase==="post-flight"&&r.quality==="valid").slice(-1)[0];
+      const comparison=(preMean!==null&&latestPost)
+        ?("Latest post-return value is "+((latestPost.value-preMean)>=0?"+":"")+fmt(latestPost.value-preMean)+" "+latestPost.unit+" ("+(100*(latestPost.value-preMean)/Math.abs(preMean)).toFixed(1)+"%) versus the mean of "+preflight.length+" valid pre-flight sample(s).")
+        :"Not enough valid pre-flight and post-return values for a descriptive comparison.";
       note.textContent=subject+" · "+selected[0].analyte_name+" · "+selected.length+
-        " published samples. Values are historical lab measurements; L− points are pre-flight and R+ points are after return.";
+        " published samples. "+comparison+" This is descriptive research context, not a clinical threshold or alert.";
       const flags=(data.quality_flags||[]).filter(f=>f.subject_id===subject);
       qualityBox.innerHTML=flags.length?flags.map(f=>'<div class="alert"><b class="quality-suspect">Data-quality flag · '+f.timepoint+'</b><div>'+f.reason+'</div><div class="muted">Original source values are retained and marked suspect; do not infer health status from this sample.</div></div>').join(""):'<div class="muted">No sample-level consistency flag for this selected crew ID. This does not certify the data as clinically validated.</div>';
     }
@@ -143,7 +153,7 @@ fetch("../output/demo-report.json").then(r=>{if(!r.ok)throw Error("Report not fo
     draw();
   }catch(error){
     stats.textContent=error.message;
-    tbody.innerHTML='<tr><td colspan="5">NASA data could not be loaded.</td></tr>';
+    tbody.innerHTML='<tr><td colspan="6">NASA data could not be loaded.</td></tr>';
   }
 })();
 </script>
