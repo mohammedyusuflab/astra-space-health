@@ -19,6 +19,8 @@ jobs:
           python-version: "3.11"
       - name: Run standard-library test suite
         run: PYTHONPATH=src python -m unittest discover -s tests -v
+      - name: Test interactive dashboard analysis engine
+        run: node --test tests/dashboard_engine.test.js
       - name: Build NASA OSDR dataset JSON
         run: PYTHONPATH=src python -m astra.osdr --input data/nasa/osd569/LSDS-7_Complete_Blood_Count_CBC.upload_SUBMITTED.csv --output /tmp/osd569-cbc.json
 
