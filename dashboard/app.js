@@ -369,6 +369,54 @@
       : 'all';
   }
 
+  function renderIndicatorCards() {
+    const latestBySeries = new Map();
+    state.results.forEach(function (result) {
+      const key = keyFor(result.reading);
+      const current = latestBySeries.get(key);
+      if (!current || parseTime(result.reading.timestamp) > parseTime(current.reading.timestamp)) {
+        latestBySeries.set(key, result);
+      }
+    });
+    const latest = Array.from(latestBySeries.values()).sort(function (a, b) {
+      return a.reading.metric.localeCompare(b.reading.metric) ||
+        a.reading.astronaut_id.localeCompare(b.reading.astronaut_id) ||
+        a.reading.unit.localeCompare(b.reading.unit);
+    });
+    if (!latest.length) {
+      $('#indicator-cards').innerHTML = '<div class="empty">No operational observations are loaded.</div>';
+      return;
+    }
+    $('#indicator-cards').innerHTML = latest.map(function (result) {
+      const reading = result.reading;
+      const baseline = state.baselines.find(function (candidate) {
+        return keyFor(candidate) === keyFor(reading);
+      });
+      const statusClass = result.alert ? 'state-danger' :
+        (result.status === 'deviation' ? 'state-warn' : '');
+      const value = reading.value === null ? 'No numeric value' : fmt(reading.value) + ' ' + reading.unit;
+      const reference = result.baseline_mean === null
+        ? 'Personal reference: not available'
+        : 'Personal mean: ' + fmt(result.baseline_mean) + ' ' + reading.unit +
+          (baseline ? ' · ' + baseline.sample_count + ' calibration samples' : '');
+      const score = result.deviation_score === null
+        ? ''
+        : 'Deviation score: ' + (result.deviation_score >= 0 ? '+' : '') +
+          fmt(result.deviation_score) + ' σ';
+      return '<article class="indicator-card">' +
+        '<h3>' + esc(reading.metric.replaceAll('_', ' ')) + '</h3>' +
+        '<div class="crew">' + esc(reading.astronaut_id) + ' · ' +
+        esc(reading.source_type) + ' · ' + esc(reading.source) + '</div>' +
+        '<div class="reading">' + esc(value) + '</div>' +
+        '<div class="reference">' + esc(reference) + '</div>' +
+        (score ? '<div class="detail">' + esc(score) + '</div>' : '') +
+        '<div class="detail">Latest record: ' + esc(reading.timestamp) + '</div>' +
+        '<span class="tag ' + statusClass + '">' + esc(STATUS_LABELS[result.status]) + '</span>' +
+        (reading.context_note ? '<div class="detail">Context: ' + esc(reading.context_note) + '</div>' : '') +
+        '</article>';
+    }).join('');
+  }
+
   function renderChart() {
     const metricKey = $('#metric-filter').value;
     const astronaut = $('#astronaut-filter').value;
@@ -495,6 +543,7 @@
   function renderAll() {
     renderMetrics();
     renderSelectors();
+    renderIndicatorCards();
     const sources = Array.from(new Set(state.readings.map(function (r) {
       return r.source_type + ' · ' + r.source;
     })));
