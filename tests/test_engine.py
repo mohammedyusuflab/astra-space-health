@@ -102,6 +102,8 @@ class AnalysisTests(unittest.TestCase):
             baselines,
             deviation_threshold=1.0,
             repeated_deviations_for_alert=2,
+            calibration_start=BASELINE_START,
+            calibration_end=baseline_end,
         )
         self.assertFalse(any(result.alert for result in results))
         self.assertTrue(all(result.status == ResultStatus.WITHIN_BASELINE for result in results))
@@ -119,7 +121,11 @@ class AnalysisTests(unittest.TestCase):
             period_start=BASELINE_START,
             period_end=datetime(2026, 11, 3, 23, 59, tzinfo=timezone.utc),
         )
-        result = analyze_readings(validation.readings, baseline)[-1]
+        result = analyze_readings(
+            validation.readings, baseline,
+            calibration_start=BASELINE_START,
+            calibration_end=datetime(2026, 11, 3, 23, 59, tzinfo=timezone.utc),
+        )[-1]
         self.assertEqual(result.status, ResultStatus.DEVIATION)
         self.assertFalse(result.alert)
 
