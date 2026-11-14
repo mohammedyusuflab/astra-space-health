@@ -18,8 +18,9 @@
 - [x] NASA OSDR research view remains isolated from operational telemetry input and alert analysis
 - [x] Suspect observations are visibly marked and excluded from the connected trend line and pre-flight mean
 - [x] NASA OSDR source citation and acknowledgement in project documentation
-- [x] CLI/dashboard smoke tests and OSDR adapter tests
-- [x] GitHub Actions workflow for tests and deterministic dataset generation
+- [x] Python unit and CLI/OSDR integration tests
+- [x] Node.js unit tests for browser CSV parsing, validation, provenance-separated baselines, and repeated-deviation alerts
+- [x] GitHub Actions workflow for Python tests, browser-engine tests, JavaScript syntax checks, and deterministic dataset/site generation
 
 ## NASA dataset facts
 
