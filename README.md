@@ -1,6 +1,6 @@
-# ASTRA — Astronaut Health Monitoring Prototype
+# ASTRA — Astronaut Health Monitoring System
 
-ASTRA is an educational astronaut-health monitoring prototype for the 2026 NASA Space Apps Challenge. It demonstrates explainable analysis of synthetic daily indicators and a separate historical view of NASA astronaut research data.
+ASTRA is a functional competition software demonstrator for the 2026 NASA Space Apps Challenge. It provides an interactive browser workspace for explainable analysis of operational observations, with a separate historical view of NASA astronaut research data.
 
 > ASTRA is not a medical device, does not diagnose or recommend treatment, does not determine mission readiness, and is not a NASA product or endorsement.
 
@@ -78,7 +78,7 @@ The OSDR dataset is shown in a separate research panel. It is not mixed into the
 
 > Data are courtesy of the NASA Open Science Data Repository.
 
-See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) for source, access, provenance, and limitations. Check the current NASA OSDR study terms before reuse outside this prototype; this repository does not claim a study-specific Creative Commons license.
+See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) for source, access, provenance, and limitations. Check the current NASA OSDR study terms before reuse outside this competition demonstrator; this repository does not claim a study-specific Creative Commons license.
 
 The challenge Navigator's November 13 response recommends OSDR as a useful source for this challenge. The separate Global Awards rule requires a NASA data source from the challenge Resources; identify the precise qualifying Resources entry in the final submission and do not claim a mapping that has not been checked.
 
