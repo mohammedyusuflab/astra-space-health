@@ -1,72 +1,55 @@
-# Candidate Challenge Brief
+# NASA Space Apps Challenge 2026 — Challenge Brief
 
-## Source and verification status
+## Official challenge
 
-- **Candidate challenge:** Create Health Monitoring Software for Astronauts on Space Missions
-- **Competition year:** 2026
-- **Official URL supplied for review:** [NASA International Space Apps Challenge](https://www.spaceappschallenge.org/2026/challenges/create-health-monitoring-software-for-astronauts-on-space-missions/)
-- **Access checked:** September 28, 2026
-- **Source status:** Not independently verified. Access to the supplied page failed in the task environment, so its full statement could not be reviewed.
+- Challenge: Create Health Monitoring Software for Astronauts on Space Missions
+- Official page: https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/
+- Access checked: November 14, 2026
+- Difficulty: Intermediate
+- Subjects: Human Exploration, Software, Space Exploration
 
-The task description supplies a short summary described as official: the requested software collects health indicators and helps astronauts assess their condition and act on it. This brief records that as a **provided summary**, not as independently completed research and not as a substitute for the full challenge statement.
+The official challenge asks teams to build health-monitoring software that gathers health indicators and enables astronauts to evaluate and act on their health status.
 
-No 2026 global rules, local-event rules, or earlier-year guidance were accessible during this review. Consequently, this document does not treat previous guidance as a 2026 rule and does not treat missing information as permission.
+## ASTRA fit
 
-## Problem and goal
+ASTRA implements a workflow that loads health-indicator observations, preserves quality/provenance, establishes personal context, explains changes, and prompts a safe review. The personal baseline and repeated-deviation rule are ASTRA design choices, not claimed NASA requirements.
 
-Based only on the provided summary, the candidate problem concerns collecting astronaut health indicators. The proposed goal is software that helps astronauts understand their condition and decide how to respond. The full scope, required behavior, safety expectations, and deliverables remain unverified.
+## Timing
 
-## Challenge requirements
+The official event page states November 14–15, 2026, with project editing/submission opening November 14 at 9:00 AM and closing November 15 at 11:59 PM local time.
 
-No requirement was independently verified from an accessible official source.
+Event page: https://www.spaceappschallenge.org/2026/
 
-| Candidate requirement | Verification status | Source and source type |
-| --- | --- | --- |
-| Create software that collects health indicators. | Not independently verified | Summary supplied in Task 02 and described there as official; the full official page was inaccessible. |
-| Help astronauts assess their condition. | Not independently verified | Summary supplied in Task 02 and described there as official; the full official page was inaccessible. |
-| Help astronauts act based on that assessment. | Not independently verified | Summary supplied in Task 02 and described there as official; the full official page was inaccessible. |
+## NASA data requirement
 
-These entries must be checked against the complete 2026 challenge page before they are used as implementation or submission requirements.
+The NASA Space Apps GO Team discussion states that Global Awards eligibility requires at least one NASA data source included in the selected challenge Resources and that used sources/data/tools must be documented in the submission.
 
-## Preliminary ASTRA proposals
+Discussion: https://github.com/nasa/spaceapps/discussions/1827
 
-The following ideas come from ASTRA's project documentation. They are not attributed to NASA or the challenge organizers.
+ASTRA currently uses synthetic data only and therefore does not yet satisfy this requirement. A qualifying source must be verified against the exact Resources list and integrated meaningfully before submission.
 
-| ASTRA proposal | Relationship to the candidate challenge |
-| --- | --- |
-| Use a fictional person and synthetic readings. | A possible safe teaching and demonstration approach; not a verified challenge requirement or approved data choice. |
-| Compare readings with a personal baseline. | A possible way to add personal context to changes; not a verified challenge requirement, medical method, or final algorithm. |
-| Explain the reason for each observation or alert. | A possible way to make results understandable; the required outputs and explanations remain unknown. |
-| Use Python for a future analysis engine. | A preliminary implementation direction only; no required language has been verified. |
-| Keep analysis independent from result presentation. | An internal architecture preference; not a verified judging or submission requirement. |
+## Demo guidance
 
-No data source, health threshold, medical rule, or final algorithm is selected here.
+An organizer response dated November 12, 2026 describes either a video of no more than 30 seconds or up to 7 slides, and says to explain what was built, how NASA data was used, and which AI tools were used. It also says the submission should be in English.
 
-## Missing implementation information
+Discussion: https://github.com/nasa/spaceapps/discussions/1973
 
-The following information could materially change the solution and remains unverified:
+Treat this as organizer-discussion guidance secondary to the live submission form.
 
-- which health indicators, if any, are required;
-- which official, recommended, permitted, or restricted data sources apply;
-- what outputs, actions, explanations, visualizations, or other deliverables are required; and
-- the 2026 judging criteria and their weighting.
+## Resource candidates under review
 
-## Rules and participation checks
+- 5 Hazards of Human Spaceflight — NASA background
+- Risks of Human Spaceflight — NASA HRP context
+- Ongoing HRP Research in Space — research context
+- Monitoring Radiation for Astronaut Health — CSA partner resource
+- Why Do We Conduct Science Experiments in Space? — NASA educational context
 
-| Topic | 2026 global status | Local-event status | Action before implementation or submission |
-| --- | --- | --- | --- |
-| Work completed before the hackathon | Not verified | Not verified | Check what preparation and pre-event work are allowed. |
-| Use of AI and AI disclosure | Not verified | Not verified | Check whether AI tools may be used and what must be disclosed. |
-| Individual participation | Not verified | Not verified | Check whether solo participation is allowed and whether team-size rules apply. |
-| Submission requirements | Not verified | Not verified | Obtain the required format, platform, assets, deadline, licenses, and presentation expectations. |
+Do not treat a background article as a dataset merely because it is listed as a resource.
 
-Global organizer instructions and local-event instructions may differ. Both must be found and identified by issuer and year; a local rule must not be presented as a global NASA Space Apps rule. Earlier-year guidance, if later consulted, must remain clearly labeled as historical until confirmed for 2026.
+## Remaining challenge work
 
-## Questions to answer before building a competition solution
-
-1. What does the complete official 2026 challenge statement require, recommend, and explicitly exclude?
-2. Which health indicators and data sources are required or permitted?
-3. What user actions and outputs should the software support?
-4. What are the 2026 judging criteria and mandatory submission items?
-5. What do the 2026 global and selected local-event rules say about pre-work, AI disclosure, and solo participation?
-6. Do the synthetic-person, personal-baseline, and explainable-alert proposals fit the verified challenge and judging criteria?
+1. Verify the exact Resources tab and select a qualifying NASA data source.
+2. Integrate it reproducibly.
+3. Show where NASA data is used in the demo.
+4. Build the user-facing dashboard.
+5. Verify final submission fields, licenses, AI disclosure, and public demo access.
