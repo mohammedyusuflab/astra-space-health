@@ -12,7 +12,8 @@
 - [x] NASA OSDR OSD-569 CBC source CSV bundled with SHA-256 checksum verification
 - [x] NASA OSD-569 adapter producing normalized historical research JSON
 - [x] Sample-level data-integrity flag for C003 / L-92; original source values preserved
-- [x] Interactive operational browser workspace with manual observation entry, CSV import/template, configurable baseline window and detection settings, one-click browser-side recalculation, searchable/filterable result log, review queue, and JSON/CSV export
+- [x] Interactive operational browser workspace with manual observation entry, CSV import/template, configurable baseline window and detection settings, one-click browser-side recalculation, searchable/filterable result log, review acknowledgement/reopen controls, and JSON/CSV export
+- [x] Root-scoped offline service worker caches the public application shell and bundled demo/research data after the first successful online load; user-entered readings remain session-only
 - [x] Operational results, chart, baselines, and alerts are recomputed from the current browser-session dataset rather than being limited to the bundled static report
 - [x] Dashboard panel with crew/analyte selectors, sample timeline, pre-flight comparison, source ranges as context, and quality warnings
 - [x] NASA OSDR research view remains isolated from operational telemetry input and alert analysis
@@ -20,6 +21,7 @@
 - [x] NASA OSDR source citation and acknowledgement in project documentation
 - [x] Python unit and CLI/OSDR integration tests
 - [x] Node.js unit tests for browser CSV parsing, validation, provenance-separated baselines, and repeated-deviation alerts
+- [x] Simulated browser integration test for dashboard boot, initial data rendering, offline-status indicator, alert acknowledgement, manual entry, and analysis rerun
 - [x] GitHub Actions workflow for Python tests, browser-engine tests, JavaScript syntax checks, and deterministic dataset/site generation
 
 ## NASA dataset facts
@@ -34,12 +36,13 @@
 ## Website deployment preparation
 
 - [x] Static-site builder creates a root landing page, dashboard HTML + JavaScript application, generated synthetic report, and normalized NASA OSDR JSON.
-- [x] Builder validates the required interactive page controls and checks app.js syntax when Node.js is available.
+- [x] Builder validates the required interactive page controls, the site-root service-worker registration, and app.js/sw.js syntax when Node.js is available.
+- [x] Builder copies the root-scoped service worker to the published website root.
 - [x] GitHub Actions site verification checks that the interactive app script is included in the published bundle.
 - [x] Builder validates the expected 60 synthetic observations, six personal baselines, two demonstration alerts, and OSD-569 dataset summary before completing.
 - [x] GitHub Pages workflow deploys on pushes to main and also supports manual dispatch.
 - [x] GitHub Pages configured with Source = GitHub Actions.
-- [x] CI workflow extended to build and verify the complete static website bundle, including dashboard/app.js.
+- [x] CI workflow runs dashboard engine and simulated UI integration tests, then builds and verifies dashboard/app.js and root sw.js in the published bundle.
 - [ ] Verify the latest interactive release in a logged-out/private browser and complete the full interaction acceptance test.
 - [ ] Capture the final browser walkthrough and add the verified public demo URL to the official Project form.
 
