@@ -36,7 +36,7 @@
 - [x] Static-site builder creates a root landing page, dashboard HTML + JavaScript application, generated synthetic report, and normalized NASA OSDR JSON.
 - [x] Builder validates the required interactive page controls and checks app.js syntax when Node.js is available.
 - [x] GitHub Actions site verification checks that the interactive app script is included in the published bundle.
-- [x] Builder validates the expected 40 synthetic observations, four personal baselines, two demonstration alerts, and OSD-569 dataset summary before completing.
+- [x] Builder validates the expected 60 synthetic observations, six personal baselines, two demonstration alerts, and OSD-569 dataset summary before completing.
 - [x] GitHub Pages workflow deploys on pushes to main and also supports manual dispatch.
 - [x] GitHub Pages configured with Source = GitHub Actions.
 - [x] CI workflow extended to build and verify the complete static website bundle, including dashboard/app.js.
