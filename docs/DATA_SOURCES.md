@@ -10,26 +10,32 @@
 
 ## Current implementation
 
-data/synthetic/demo_telemetry.csv contains 40 synthetic observations for fictional astronaut ASTRA-01. No real NASA or partner-agency dataset is ingested by the current code.
+`data/synthetic/demo_telemetry.csv` contains 40 synthetic observations for fictional astronaut ASTRA-01. The dashboard and CLI use this data for the demonstration. No real NASA or partner-agency dataset is ingested by the current code.
 
-## Challenge-resource candidates
+## Challenge resources identified
 
-| Resource | Origin | Treatment |
+| Resource | Origin | Treatment in ASTRA |
 | --- | --- | --- |
 | 5 Hazards of Human Spaceflight | NASA | Background context |
 | Risks of Human Spaceflight | NASA HRP | Research context |
-| Ongoing HRP Research in Space | NASA HRP | Research context; inspect for actual data |
-| Monitoring Radiation for Astronaut Health | Canadian Space Agency | Partner resource |
+| Ongoing HRP Research in Space | NASA HRP | Research context; inspect for structured data |
+| Monitoring Radiation for Astronaut Health | Canadian Space Agency | Partner research context |
 | Why Do We Conduct Science Experiments in Space? | NASA | Educational context |
 
-These titles must be rechecked against the exact live challenge Resources list before claiming that any item is a qualifying dataset.
+These titles must be checked against the live challenge Resources tab and linked source pages before claiming any one of them is a qualifying data source. The organizer guidance says Global Awards eligibility requires at least one NASA data source included in the selected challenge Resources. Do not substitute an unrelated NASA dataset without confirming eligibility.
 
 ## NASA measurement reference
 
 NASA Standard Measures: https://www.nasa.gov/reference/standard-measures/
 
-It informed candidate demo metrics but is not treated as live telemetry and has not been counted toward the qualifying data-source requirement.
+This describes measurement domains including activity/light exposure, sleep, and cognition. It informs candidate metrics but is not treated as live telemetry or as the qualifying challenge dataset.
 
-## Next
+## Integration decision
 
-Select a qualifying NASA data source, document URL/license/access, inspect schema/units, then add a source-specific adapter while keeping synthetic and real records separate.
+No dataset adapter is claimed as implemented. Before integration, confirm:
+1. The resource is included in this challenge's official Resources tab.
+2. The resource exposes actual structured observations, not only descriptive research text.
+3. Units, timestamps, subject identifiers, access conditions, and license/terms are understood.
+4. Any privacy restrictions are respected.
+
+Until then, the dashboard explicitly labels the included data synthetic.

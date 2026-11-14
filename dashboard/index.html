@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ASTRA | Astronaut Health Monitor</title>
+<style>
+:root{color-scheme:dark;--bg:#08111f;--panel:#101d30;--line:#24364e;--muted:#91a4bc;--text:#edf4fc;--cyan:#65d4d0;--amber:#f1bd68;--red:#f07878}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#152c43 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,sans-serif}
+main{max-width:1180px;margin:auto;padding:34px 22px 60px}.top{display:flex;justify-content:space-between;gap:20px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:22px}
+.brand{letter-spacing:.22em;font-size:12px;color:var(--cyan);font-weight:700}.title{font-size:clamp(28px,5vw,42px);margin:8px 0 2px}.sub,.muted{color:var(--muted)}.status{border:1px solid #47716f;color:var(--cyan);padding:7px 11px;border-radius:4px;font-size:12px;white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:24px 0}.panel,.metric{background:linear-gradient(145deg,#13243a,#0e1a2b);border:1px solid var(--line);border-radius:9px;padding:18px}.metric small{color:var(--muted);display:block}.metric strong{font-size:30px;display:block;margin-top:5px}.section{margin-top:24px}.section h2{font-size:17px;font-weight:600;margin:0 0 12px}.layout{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}.chart{width:100%;height:240px;display:block}.legend{display:flex;gap:16px;color:var(--muted);font-size:12px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--cyan);margin-right:6px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:500}.tag{font-size:11px;padding:3px 7px;border:1px solid var(--line);border-radius:3px}.alert{border-left:3px solid var(--amber);padding:11px 13px;background:#211f1a;margin:10px 0}.alert b{color:var(--amber)}.empty{color:var(--muted);padding:18px 0}.foot{margin-top:26px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:12px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}@media(max-width:460px){.grid{grid-template-columns:1fr 1fr}main{padding:22px 14px}.top{align-items:flex-start;flex-direction:column}}
+</style></head>
+<body><main>
+<header class="top"><div><div class="brand">ASTRA / FLIGHT HEALTH SYSTEMS</div><h1 class="title">Crew health overview</h1><div class="sub">Mission simulation · Astronaut ASTRA-01</div></div><div class="status">● DEMONSTRATION MODE</div></header>
+<section class="grid" id="stats"><div class="metric"><small>Observations</small><strong>—</strong></div><div class="metric"><small>Tracked indicators</small><strong>—</strong></div><div class="metric"><small>Active alerts</small><strong>—</strong></div><div class="metric"><small>Data quality issues</small><strong>—</strong></div></section>
+<section class="layout section"><div class="panel"><h2 id="chart-title">Indicator trend</h2><div class="legend"><span><i class="dot"></i>Recorded values</span><span>Baseline mean shown as dashed line</span></div><svg id="chart" class="chart" viewBox="0 0 700 240" role="img" aria-label="Indicator trend chart"></svg><div class="muted" id="chart-note"></div></div>
+<div class="panel"><h2>Review queue</h2><div id="alerts" class="empty">Loading report…</div><h2 style="margin-top:24px">Data provenance</h2><p class="muted" id="provenance">Loading…</p></div></section>
+<section class="section panel"><h2>Observation log</h2><div style="overflow-x:auto"><table><thead><tr><th>Mission day</th><th>Indicator</th><th>Value</th><th>Status</th><th>Source</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<footer class="foot">ASTRA is an educational prototype, not a medical device. Alerts are statistical demonstrations, not clinical thresholds or flight rules. Synthetic readings are fictional and are not NASA telemetry.</footer>
+</main>
+<script>
+const fmt=v=>Number(v).toLocaleString(undefined,{maximumFractionDigits:2});
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function render(data){
+ const results=data.results||[], baselines=data.baselines||[], alerts=results.filter(x=>x.alert), issues=data.validation_issues||[];
+ const metrics=[...new Set(results.map(x=>x.reading.metric))];
+ document.querySelector("#stats").innerHTML=[[results.length,"Observations"],[metrics.length,"Tracked indicators"],[alerts.length,"Active alerts"],[issues.length,"Data quality issues"]].map(([n,l])=>'<div class="metric"><small>'+l+'</small><strong>'+n+'</strong></div>').join("");
+ const sources=[...new Set(results.map(x=>x.reading.source_type+" · "+x.reading.source))];
+ document.querySelector("#provenance").textContent=sources.join("; ")||"No source metadata.";
+ const queue=document.querySelector("#alerts");
+ queue.innerHTML=alerts.length?alerts.map(a=>'<div class="alert"><b>'+esc(a.reading.metric.replaceAll("_"," "))+'</b><div>'+esc(a.explanation)+'</div><div class="muted">Day '+esc(a.reading.mission_day)+' · '+esc(a.suggested_action)+'</div></div>').join(""):'<div class="empty">No repeated-deviation alerts in this report.</div>';
+ const tbody=document.querySelector("#rows");
+ tbody.innerHTML=results.slice().reverse().map(r=>'<tr><td>'+esc(r.reading.mission_day??"—")+'</td><td>'+esc(r.reading.metric.replaceAll("_"," "))+'</td><td>'+esc(r.reading.value??"—")+' '+esc(r.reading.unit)+'</td><td><span class="tag">'+esc(r.status)+'</span></td><td>'+esc(r.reading.source_type)+'</td></tr>').join("");
+ const metric=metrics.includes("sleep_duration")?"sleep_duration":metrics[0];
+ const points=results.filter(r=>r.reading.metric===metric&&r.reading.value!==null).sort((a,b)=>a.reading.timestamp.localeCompare(b.reading.timestamp));
+ document.querySelector("#chart-title").textContent=metric?metric.replaceAll("_"," ")+" trend":"Indicator trend";
+ if(!points.length){document.querySelector("#chart").innerHTML="";return;}
+ const values=points.map(p=>Number(p.reading.value)), base=baselines.find(b=>b.metric===metric&&b.source_type===points[0].reading.source_type&&b.source===points[0].reading.source);
+ const min=Math.min(...values,base?base.mean:Infinity),max=Math.max(...values,base?base.mean:-Infinity),span=max-min||1;
+ const y=v=>205-(v-min)/span*170,x=i=>45+i*(610/Math.max(points.length-1,1));
+ let svg='<line x1="45" y1="205" x2="660" y2="205" stroke="#34465d"/><line x1="45" y1="25" x2="45" y2="205" stroke="#34465d"/>';
+ if(base){const yy=y(base.mean);svg+='<line x1="45" y1="'+yy+'" x2="660" y2="'+yy+'" stroke="#f1bd68" stroke-dasharray="7 6"/><text x="50" y="'+(yy-7)+'" fill="#f1bd68" font-size="11">Baseline '+fmt(base.mean)+' '+esc(base.unit)+'</text>';}
+ svg+='<polyline fill="none" stroke="#65d4d0" stroke-width="3" points="'+values.map((v,i)=>x(i)+","+y(v)).join(" ")+'"/>';
+ values.forEach((v,i)=>{svg+='<circle cx="'+x(i)+'" cy="'+y(v)+'" r="4" fill="#65d4d0"/>';});
+ svg+='<text x="45" y="229" fill="#91a4bc" font-size="11">Day '+esc(points[0].reading.mission_day??"")+'</text><text x="660" y="229" text-anchor="end" fill="#91a4bc" font-size="11">Day '+esc(points[points.length-1].reading.mission_day??"")+'</text>';
+ document.querySelector("#chart").innerHTML=svg;
+ document.querySelector("#chart-note").textContent=base?"Personal reference baseline: "+fmt(base.mean)+" "+base.unit+".":"No matching baseline available for this series.";
+}
+fetch("../output/demo-report.json").then(r=>{if(!r.ok)throw Error("Report not found. Generate output/demo-report.json first.");return r.json();}).then(render).catch(e=>{document.querySelector("#alerts").textContent=e.message;document.querySelector("#provenance").textContent="Report unavailable.";});
+</script></body></html>
