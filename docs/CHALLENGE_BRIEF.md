@@ -34,6 +34,24 @@ The challenge Navigator's November 13, 2026 response recommends OSDR and NASA Li
 
 The GO Team's general resources answer says Global Awards eligibility requires at least one NASA data source included in the selected challenge's Resources tab. The Health Monitoring Software Navigator separately says there is no single mandatory downloadable dataset and recommends OSDR. The project submission must therefore identify the exact challenge Resources entry used, cite the OSDR study/file, and list all other datasets, tools, code, text, and visual assets used. Do not claim an unverified direct link from the challenge Resources tab.
 
+## Challenge-resource lineage and eligibility
+
+The challenge Resources include NASA's **Ongoing HRP Research in Space**:
+https://www.nasa.gov/hrp/ongoing-hrp-research/
+
+This HRP page lists the Omics Archive as a human investigation. NASA describes the Omics Archive as research using astronaut blood, urine, saliva, feces, and cells:
+https://www.nasa.gov/reference/omics-archive/
+
+NASA's SpaceX Inspiration4 mission collection in OSDR lists OSD-569:
+https://osdr.nasa.gov/bio/repo/data/missions/SpaceX%20Inspiration4
+
+The Health Monitoring Software challenge Navigator separately recommends NASA OSDR as a useful starting point for relevant research datasets:
+https://github.com/nasa/spaceapps/discussions/2025
+
+ASTRA therefore documents its data-source path as the challenge's HRP research context -> NASA Omics Archive context -> NASA OSDR Inspiration4 mission -> OSD-569 CBC. In the project submission, list the exact challenge Resource title and the OSDR study/file separately. The GO Team's general rule for Global Awards requires a NASA source from the selected challenge's Resources:
+https://github.com/nasa/spaceapps/discussions/1827
+Do not claim that the challenge Resources page directly links the OSD-569 file unless that exact link is visible in the live submission interface.
+
 ## Safety and scientific limitations
 
 - ASTRA is not a medical device; it does not diagnose, recommend treatment, or determine flight readiness.
