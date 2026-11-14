@@ -58,6 +58,20 @@ def analyze_readings(
                 ))
                 continue
 
+            # Calibration observations define the personal reference; they are not
+            # operational follow-up readings and must never trigger alerts.
+            if baseline.period_start <= reading.timestamp <= baseline.period_end:
+                consecutive = 0
+                output.append(AnalysisResult(
+                    reading=reading, status=ResultStatus.WITHIN_BASELINE,
+                    baseline_mean=baseline.mean,
+                    baseline_standard_deviation=baseline.standard_deviation,
+                    deviation_score=None, consecutive_deviations=0, alert=False,
+                    explanation="This observation belongs to the selected calibration window and contributes to the personal baseline. It is not evaluated as an operational deviation.",
+                    suggested_action="Complete the calibration period, then review subsequent observations against this personal reference.",
+                ))
+                continue
+
             delta = reading.value - baseline.mean
             if baseline.standard_deviation == 0:
                 is_deviation = abs(delta) > 1e-12
