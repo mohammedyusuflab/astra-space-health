@@ -9,31 +9,36 @@
 - [x] Provenance-separated personal baselines and explainable deviation analysis
 - [x] Repeated-consecutive-deviation alerts for the synthetic operational demo
 - [x] CLI and JSON output for synthetic telemetry
-- [x] NASA OSDR OSD-569 CBC source CSV bundled with a SHA-256 checksum
-- [x] NASA OSD-569 adapter producing a normalized historical research JSON
-- [x] Sample-level data-integrity flag for C003 / L-92; raw values preserved
-- [x] Dashboard panel with crew/analyte selectors, sample timeline, values, lab-reference context, and quality warnings
+- [x] NASA OSDR OSD-569 CBC source CSV bundled with SHA-256 checksum verification
+- [x] NASA OSD-569 adapter producing normalized historical research JSON
+- [x] Sample-level data-integrity flag for C003 / L-92; original source values preserved
+- [x] Dashboard panel with crew/analyte selectors, sample timeline, pre-flight comparison, source ranges as context, and quality warnings
+- [x] Suspect observations are visibly marked and excluded from the connected trend line and pre-flight mean
 - [x] NASA OSDR source citation and acknowledgement in project documentation
 - [x] CLI/dashboard smoke tests and OSDR adapter tests
-- [x] GitHub Actions test workflow
+- [x] GitHub Actions workflow for tests and deterministic dataset generation
 
 ## NASA dataset facts
 
 - 553 source measurements, 28 samples, four de-identified crew identifiers, 20 analytes.
 - Seven relative sample points: three before launch and four after return.
 - No in-flight CBC samples.
-- One sample is flagged suspect by a sample-level internal consistency check.
+- One sample (C003 / L-92) is flagged suspect by a sample-level internal consistency check.
 - Historical OSDR measurements are displayed separately and do not enter the synthetic telemetry alert engine.
+- The source CSV's SHA-256 matches the pinned source checksum.
 
 ## Verification status
 
-The pre-dashboard telemetry engine previously passed 15 tests in a reported local run. The newly added NASA adapter tests and combined CI workflow must be run on GitHub Actions before claiming a fresh green test result. The source CSV checksum was verified against the published checksum value; the direct NASA download script has not been executed from this environment.
+- GitHub Actions workflow run for PR #6 completed successfully: 20 tests passed and the OSDR JSON build completed.
+- GitHub Actions workflow run for PR #7 also completed successfully: 20 tests passed and the OSDR JSON build reported 553 research measurements, 28 samples, four subjects, and one suspect sample.
+- The PR #6 and PR #7 changes have been merged into \`main\`.
+- The direct NASA downloader is included and checksum-protected; it was not executed from this authoring environment.
+- Automated tests include dashboard content and CLI integration smoke tests. A separate manual browser/device acceptance review has not been recorded.
 
-## Remaining
+## Remaining before final submission
 
-1. Confirm the exact qualifying NASA resource entry shown on the live challenge Resources tab and name it in the submission.
-2. Verify GitHub Actions completes successfully on the integration PR.
-3. Perform a browser-level review of the final dashboard with the committed report files.
-4. Prepare the short public demo and final project submission.
+1. In the Team Project submission, list the exact challenge Resources entry (Ongoing HRP Research in Space) and the OSDR OSD-569 study/file as distinct references.
+2. Capture a browser walkthrough of the two data paths and the flagged sample.
+3. Prepare the public demo/video or slides, AI-tool disclosure, and final project-form citations.
 
 The 2-standard-deviation band and two-consecutive-observation rule are demonstration settings only, not medical thresholds or NASA requirements.
