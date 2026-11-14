@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -28,11 +29,13 @@ class CliSmokeTests(unittest.TestCase):
     def test_cli_generates_json_report_from_demo(self):
         with tempfile.TemporaryDirectory() as directory:
             report_path = Path(directory) / "nested" / "report.json"
+            nasa_path = Path(directory) / "nested" / "nasa-osd569.json"
             result = self.run_cli(
                 "--input", str(DEMO),
                 "--baseline-start", "2026-11-01T00:00:00Z",
                 "--baseline-end", "2026-11-07T23:59:00Z",
                 "--json", str(report_path),
+                "--nasa-cbc-json", str(nasa_path),
             )
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("Readings analyzed: 40", result.stdout)
@@ -40,6 +43,10 @@ class CliSmokeTests(unittest.TestCase):
             self.assertIn("Alerts: 2", result.stdout)
             self.assertTrue(report_path.is_file())
             self.assertIn('"results"', report_path.read_text(encoding="utf-8"))
+            self.assertTrue(nasa_path.is_file())
+            nasa = json.loads(nasa_path.read_text(encoding="utf-8"))
+            self.assertEqual(nasa["dataset"]["id"], "OSD-569")
+            self.assertIn("NASA OSDR OSD-569: 553 research measurements", result.stdout)
 
     def test_cli_rejects_timezone_naive_baseline(self):
         result = self.run_cli(
