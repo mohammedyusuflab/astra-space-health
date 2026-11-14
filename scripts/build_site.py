@@ -108,7 +108,7 @@ def build_site(destination: Path) -> Path:
 
     dashboard_source = ROOT / "dashboard" / "index.html"
     dashboard_app_source = ROOT / "dashboard" / "app.js"
-    dashboard_sw_source = ROOT / "dashboard" / "sw.js"
+    dashboard_sw_source = ROOT / "sw.js"
     if not dashboard_source.is_file():
         raise FileNotFoundError(f"Dashboard file not found: {dashboard_source}")
     if not dashboard_app_source.is_file():
@@ -150,7 +150,7 @@ def build_site(destination: Path) -> Path:
 
     shutil.copy2(dashboard_source, dashboard_dir / "index.html")
     shutil.copy2(dashboard_app_source, dashboard_dir / "app.js")
-    shutil.copy2(dashboard_sw_source, dashboard_dir / "sw.js")
+    shutil.copy2(dashboard_sw_source, target / "sw.js")
 
     report_path = output_dir / "demo-report.json"
     nasa_json_path = nasa_dir / "osd569-cbc.json"
@@ -209,7 +209,7 @@ def build_site(destination: Path) -> Path:
         f"{summary['analyte_count']} analytes / "
         f"{summary['suspect_sample_count']} suspect sample"
     )
-    print("Browser assets verified: dashboard/index.html + dashboard/app.js + dashboard/sw.js")
+    print("Browser assets verified: dashboard/index.html + dashboard/app.js + root sw.js")
     print("Browser data paths verified: dashboard -> ../output and ../data/nasa")
     return target
 
