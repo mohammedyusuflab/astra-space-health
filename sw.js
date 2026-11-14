@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'astra-site-shell-v3';
+const CACHE_NAME = 'astra-site-shell-v4';
 const PRECACHE_URLS = [
   './',
   './index.html',
