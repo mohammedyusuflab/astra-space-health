@@ -165,6 +165,49 @@ test('timestamps without an explicit timezone are rejected', function () {
 });
 
 
+
+test('CSV parser rejects malformed quote placement', function () {
+  const header = 'timestamp,astronaut_id,metric,value,unit,source_type,source\\n';
+  assert.throws(function () {
+    engine.parseCSV(header + '2026-11-01T08:00:00Z,A,"heart"rate,70,bpm,synthetic,demo\\n');
+  }, /characters after a closing quote/i);
+  assert.throws(function () {
+    engine.parseCSV(header + '2026-11-01T08:00:00Z,A,heart"rate,70,bpm,synthetic,demo\\n');
+  }, /quote inside an unquoted field/i);
+});
+
+test('analysis settings enforce the ranges shown in the dashboard', function () {
+  const valid = engine.validateSettings({
+    start: 1, end: 2, threshold: 0.1, repeats: 2, minimumSamples: 2
+  });
+  assert.equal(valid.threshold, 0.1);
+  assert.equal(valid.repeats, 2);
+  assert.equal(valid.minimumSamples, 2);
+  assert.throws(function () {
+    engine.validateSettings({ start: 1, end: 2, threshold: 10.1, repeats: 2, minimumSamples: 3 });
+  }, /between 0.1 and 10/i);
+  assert.throws(function () {
+    engine.validateSettings({ start: 1, end: 2, threshold: 2, repeats: 21, minimumSamples: 3 });
+  }, /between 2 and 20/i);
+  assert.throws(function () {
+    engine.validateSettings({ start: 1, end: 2, threshold: 2, repeats: 2, minimumSamples: 31 });
+  }, /between 2 and 30/i);
+  assert.throws(function () {
+    engine.validateSettings({ start: 2, end: 1, threshold: 2, repeats: 2, minimumSamples: 3 });
+  }, /on or after/i);
+});
+
+test('manual datetime defaults preserve local wall-clock time', function () {
+  const local = new Date(2026, 10, 14, 13, 10, 30, 0);
+  assert.equal(engine.localDateTimeValue(local), '2026-11-14T13:10');
+});
+
+test('CSV export neutralizes spreadsheet formula text without changing numeric values', function () {
+  assert.equal(engine.csvCell('=HYPERLINK("https://example.com")'), '"\'=HYPERLINK(""https://example.com"")"');
+  assert.equal(engine.csvCell('  @SUM(A1:A2)'), '"\'  @SUM(A1:A2)"');
+  assert.equal(engine.csvCell(-12.5), '"-12.5"');
+});
+
 test('operational dashboard engine never loads the separate NASA research JSON', function () {
   assert.equal(source.includes('osd569-cbc.json'), false);
   assert.ok(source.includes('../output/demo-report.json'));
