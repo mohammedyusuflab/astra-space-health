@@ -1,69 +1,89 @@
 # ASTRA — Astronaut Health Monitoring Prototype
 
-ASTRA is an educational astronaut-health monitoring prototype for the 2026 NASA Space Apps Challenge. It ingests health-indicator observations, compares them with an individual's personal baseline, explains changes, and prompts a review. The included crew and readings are fictional synthetic demonstration data.
+ASTRA is an educational astronaut-health monitoring prototype for the 2026 NASA Space Apps Challenge. It demonstrates explainable analysis of synthetic daily indicators and a separate historical view of NASA astronaut research data.
 
 > ASTRA is not a medical device, does not diagnose or recommend treatment, does not determine mission readiness, and is not a NASA product or endorsement.
 
-## Current implementation
+## What is implemented
 
-- CSV ingestion and validation
-- valid/missing/invalid/outlier quality handling
-- synthetic/real provenance with required references for real data
-- provenance-separated personal baselines
-- explainable deviation analysis and repeated-deviation alerts
-- CLI and JSON report generation
-- Browser dashboard for trends, baselines, alerts, provenance, and observation history
-- Automated tests; Python standard library only
+- Python CSV ingestion and validation for the synthetic operational demo
+- Provenance-separated personal baselines and explainable repeated-deviation review prompts
+- Command-line interface and JSON report output
+- Browser dashboard with synthetic telemetry and a separate NASA historical-research panel
+- NASA OSDR OSD-569 Inspiration4 CBC dataset, source CSV, checksum, and normalized JSON
+- Sample-level data-quality flagging; published source values are preserved
+- Automated tests and a GitHub Actions workflow; Python standard library only
 
-**Data status:** the demo CSV is synthetic. No astronaut medical records, spacecraft sensors, live telemetry, or qualifying challenge-resource dataset is currently connected. Do not describe the demo readings as NASA data.
+## Run the full demo
 
-## Run the analysis
+Python 3.10+; no third-party Python dependencies.
 
-Python 3.10+; no third-party dependencies.
-
-```bash
-PYTHONPATH=src python -m astra \
-  --input data/synthetic/demo_telemetry.csv \
-  --baseline-start 2026-11-01T00:00:00Z \
-  --baseline-end 2026-11-07T23:59:00Z \
+\`\`\`bash
+PYTHONPATH=src python -m astra \\
+  --input data/synthetic/demo_telemetry.csv \\
+  --baseline-start 2026-11-01T00:00:00Z \\
+  --baseline-end 2026-11-07T23:59:00Z \\
   --json output/demo-report.json
-```
+\`\`\`
+
+The CLI writes two separate outputs:
+- \`output/demo-report.json\`: synthetic daily telemetry analysis, personal baselines, and demonstration alerts.
+- \`data/nasa/osd569-cbc.json\`: normalized historical NASA OSDR CBC measurements used by the research panel.
+
+Regenerate the NASA research view on its own:
+
+\`\`\`bash
+PYTHONPATH=src python -m astra.osdr
+\`\`\`
+
+Re-download the original file directly from NASA OSDR and verify its SHA-256 before replacing the bundled copy:
+
+\`\`\`bash
+python scripts/fetch_nasa_osd569.py
+\`\`\`
 
 ## Open the dashboard
 
-After generating the report, start a local static server from the repository root:
+From the repository root:
 
-```bash
+\`\`\`bash
 python -m http.server 8000
-```
+\`\`\`
 
-Open http://localhost:8000/dashboard/ . The dashboard reads `output/demo-report.json`; it does not upload data to a server.
+Open http://localhost:8000/dashboard/ . The page reads the generated synthetic report and the normalized NASA OSDR JSON. It does not upload data to a server.
 
 ## Tests
 
-```bash
+\`\`\`bash
 PYTHONPATH=src python -m unittest discover -s tests -v
-```
+\`\`\`
 
-## NASA context and data integrity
+GitHub Actions runs the standard-library test suite and rebuilds the NASA dataset JSON on pushes and pull requests.
 
-NASA Standard Measures describes human-spaceflight measurement domains including activity/light exposure, sleep, and cognition: https://www.nasa.gov/reference/standard-measures/
+## NASA dataset and interpretation
 
-The challenge's official guidance states that Global Awards eligibility requires at least one NASA data source included in the selected challenge's Resources. The challenge page is https://www.spaceappschallenge.org/2026/challenges/health-monitoring-software/ . The challenge resources currently identified for ASTRA are references and research context; we have not yet verified a downloadable structured dataset from them. Accordingly, ASTRA does not claim to have met the qualifying-data requirement yet.
+The historical panel uses NASA Open Science Data Repository study OSD-569, SpaceX Inspiration4 whole-blood / complete blood count data:
+
+- Study page: https://osdr.nasa.gov/bio/repo/data/studies/OSD-569
+- Dataset DOI: 10.26030/e0rx-sh52
+- Included file: \`data/nasa/osd569/LSDS-7_Complete_Blood_Count_CBC.upload_SUBMITTED.csv\`
+
+The source file contains 553 measurements from 28 blood-draw samples involving four de-identified crew identifiers. The sample labels are L-92, L-44, and L-3 before launch and R+1, R+45, R+82, and R+194 after return. **There are no in-flight CBC samples.** This is historical research data, not a live spacecraft sensor feed and not the ASTRA-01 synthetic data.
+
+The adapter flags sample C003 at L-92 because the absolute differential counts do not reconcile with the corresponding percentages and white-blood-cell count. The published values remain unchanged and are marked suspect. Missing analytes remain missing. Laboratory reference ranges are shown only as source context; they are not NASA mission limits, personalized baselines, or alert thresholds.
+
+The OSDR dataset is shown in a separate research panel. It is not mixed into the synthetic telemetry baseline or repeated-alert engine. OSDR acknowledgement:
+
+> Data are courtesy of the NASA Open Science Data Repository.
+
+See [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) for source, access, provenance, and limitations. Check the current NASA OSDR study terms before reuse outside this prototype; this repository does not claim a study-specific Creative Commons license.
+
+The challenge Navigator's November 13 response recommends OSDR as a useful source for this challenge. The separate Global Awards rule requires a NASA data source from the challenge Resources; identify the precise qualifying Resources entry in the final submission and do not claim a mapping that has not been checked.
 
 ## Limitations
 
-The default 2-standard-deviation band and two-consecutive-observation rule are demonstration settings only. They are not NASA requirements or medical thresholds.
-
-## Documentation
-
-- docs/CHALLENGE_BRIEF.md
-- docs/DATA_SOURCES.md
-- docs/SCOPE.md
-- docs/ARCHITECTURE.md
-- docs/ALGORITHM.md
-- docs/IMPLEMENTATION_STATUS.md
+The 2-standard-deviation band and two-consecutive-observation rule in the synthetic engine are demonstration settings only. They are not NASA requirements or medical thresholds. Inspiration4 was a three-day mission, so OSD-569 cannot validate health monitoring for long-duration missions.
 
 ## License
 
-MIT.
+The software license applies to ASTRA code. It does not supersede the source terms for NASA OSDR data.
