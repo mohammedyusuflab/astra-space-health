@@ -578,9 +578,10 @@
     downloadFile('astra-analysis.csv', lines.join('\r\n'), 'text/csv;charset=utf-8');
   }
   function downloadTemplate() {
-    const header = REQUIRED.concat([
-      'source_reference', 'quality', 'mission_day', 'context_note'
-    ]);
+    const header = [
+      'timestamp', 'astronaut_id', 'metric', 'value', 'unit', 'source_type',
+      'source', 'source_reference', 'quality', 'mission_day', 'context_note'
+    ];
     const example = [
       '2026-11-11T08:00:00Z', 'ASTRA-01', 'sleep_duration', '6.4', 'hours',
       'synthetic', 'ASTRA-imported-demo', '', 'valid', '39', 'High workload (example)'
