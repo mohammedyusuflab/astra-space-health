@@ -38,8 +38,8 @@ class CliSmokeTests(unittest.TestCase):
                 "--nasa-cbc-json", str(nasa_path),
             )
             self.assertEqual(result.returncode, 0, result.stderr)
-            self.assertIn("Readings analyzed: 40", result.stdout)
-            self.assertIn("Baselines created: 4", result.stdout)
+            self.assertIn("Readings analyzed: 60", result.stdout)
+            self.assertIn("Baselines created: 6", result.stdout)
             self.assertIn("Alerts: 2", result.stdout)
             self.assertTrue(report_path.is_file())
             self.assertIn('"results"', report_path.read_text(encoding="utf-8"))
@@ -61,11 +61,17 @@ class CliSmokeTests(unittest.TestCase):
 class DashboardSmokeTests(unittest.TestCase):
     def test_dashboard_loads_generated_report_and_discloses_synthetic_data(self):
         html = (ROOT / "dashboard" / "index.html").read_text(encoding="utf-8")
-        self.assertIn("../output/demo-report.json", html)
+        self.assertIn("load-demo", html)
+        self.assertIn("../output/demo-report.json", (ROOT / "dashboard" / "app.js").read_text(encoding="utf-8"))
         self.assertIn("DEMONSTRATION MODE", html)
+        self.assertIn('id="indicator-cards"', html)
+        self.assertIn('id="manual-form"', html)
+        self.assertIn('id="csv-file"', html)
+        self.assertIn('id="run-analysis"', html)
         self.assertIn("not NASA telemetry", html)
-        self.assertIn("Observation log", html)
+        self.assertIn("Operational observation log", html)
         self.assertIn("validPoints", html)
+        self.assertIn("function renderIndicatorCards()", (ROOT / "dashboard" / "app.js").read_text(encoding="utf-8"))
         self.assertIn("Δ vs pre-flight mean", html)
         self.assertIn("no in-flight CBC samples", html)
 
