@@ -662,7 +662,7 @@
       if (status) status.textContent = 'OFFLINE CACHE UNAVAILABLE';
       return;
     }
-    navigator.serviceWorker.register('./sw.js')
+    navigator.serviceWorker.register('../sw.js')
       .then(function () { return navigator.serviceWorker.ready; })
       .then(function () {
         const status = $('#offline-status');
