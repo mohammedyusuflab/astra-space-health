@@ -47,6 +47,21 @@ test('CSV parser rejects files missing required telemetry columns', function () 
   }, /missing required columns/i);
 });
 
+test('CSV parser rejects duplicate headers and rows with excess columns', function () {
+  assert.throws(function () {
+    engine.parseCSV(
+      'timestamp,astronaut_id,metric,unit,source_type,source,metric\n' +
+      '2026-11-01T08:00:00Z,A,sleep,hours,synthetic,demo,sleep\n'
+    );
+  }, /duplicate column names/i);
+  assert.throws(function () {
+    engine.parseCSV(
+      'timestamp,astronaut_id,metric,unit,source_type,source\n' +
+      '2026-11-01T08:00:00Z,A,sleep,hours,synthetic,demo,unexpected\n'
+    );
+  }, /more values than the header row/i);
+});
+
 test('real readings require a traceable source reference', function () {
   const checked = engine.validateReading({
     timestamp: '2026-11-01T08:00:00Z',
