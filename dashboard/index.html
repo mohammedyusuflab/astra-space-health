@@ -36,6 +36,7 @@ details.entry-panel summary{cursor:pointer;color:var(--cyan);font-weight:600}
 .toolbar input{max-width:260px}.toolbar select{max-width:230px}
 .state-warn{color:var(--amber);border-color:#725c36}.state-danger{color:#ff9999;border-color:#824b50}
 .issue-list{margin:8px 0;padding-left:20px;color:#e8c9a6;font-size:13px}.issue-list li{margin:7px 0}
+.review-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:10px}
 .section-note{color:var(--muted);font-size:12px;margin:8px 0}
 button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 @media(max-width:800px){.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -136,7 +137,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,su
     <div class="muted" id="chart-note">Load observations to view trends.</div>
   </div>
   <div class="panel">
-    <h2>Review queue</h2><p class="section-note">Only repeated deviations under the configured demonstration rule appear here.</p>
+    <h2>Review queue</h2><p class="section-note">Only repeated deviations under the configured rule appear here. Review acknowledgements are stored in this browser session only and do not change analysis results.</p>
     <div id="alerts" class="empty">Loading analysis…</div>
     <h2 style="margin-top:24px">Data provenance</h2><p class="muted" id="provenance">Operational readings are processed locally in this browser session.</p>
   </div>
