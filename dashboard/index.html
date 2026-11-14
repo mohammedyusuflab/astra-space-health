@@ -11,6 +11,9 @@ main{max-width:1180px;margin:auto;padding:34px 22px 60px}.top{display:flex;justi
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:24px 0}.panel,.metric{background:linear-gradient(145deg,#13243a,#0e1a2b);border:1px solid var(--line);border-radius:9px;padding:18px}.metric small{color:var(--muted);display:block}.metric strong{font-size:30px;display:block;margin-top:5px}.section{margin-top:24px}.section h2{font-size:17px;font-weight:600;margin:0 0 12px}.layout{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}.chart{width:100%;height:240px;display:block}.legend{display:flex;gap:16px;color:var(--muted);font-size:12px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--cyan);margin-right:6px}
 table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:500}.tag{font-size:11px;padding:3px 7px;border:1px solid var(--line);border-radius:3px}.alert{border-left:3px solid var(--amber);padding:11px 13px;background:#211f1a;margin:10px 0}.alert b{color:var(--amber)}.empty{color:var(--muted);padding:18px 0}.foot{margin-top:26px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:12px}
 @media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}@media(max-width:460px){.grid{grid-template-columns:1fr 1fr}main{padding:22px 14px}.top{align-items:flex-start;flex-direction:column}}
+
+.research-head{display:flex;justify-content:space-between;align-items:center;gap:16px}.research-head h2{margin-top:8px}.research-disclosure{max-width:900px}.research-stats{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0;color:var(--muted);font-size:13px}.research-stats span{border:1px solid var(--line);border-radius:5px;padding:7px 10px}.research-controls{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0}.research-controls label{display:grid;gap:6px;color:var(--muted);font-size:12px}.research-controls select{min-width:190px;background:#0b1728;color:var(--text);border:1px solid var(--line);border-radius:5px;padding:9px 12px;font:inherit}.research-chart-wrap{margin:0 0 14px}.research-table-wrap{overflow-x:auto}.research-quality{margin-top:12px}.quality-suspect{color:var(--amber)}.research-citation{font-size:12px;margin-top:18px}.research-citation a{color:var(--cyan)}.research-citation strong{color:var(--text)}@media(max-width:600px){.research-head{align-items:flex-start;flex-direction:column}.research-controls select{min-width:150px;max-width:100%}}
+
 </style></head>
 <body><main>
 <header class="top"><div><div class="brand">ASTRA / FLIGHT HEALTH SYSTEMS</div><h1 class="title">Crew health overview</h1><div class="sub">Mission simulation · Astronaut ASTRA-01</div></div><div class="status">● DEMONSTRATION MODE</div></header>
@@ -18,6 +21,30 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;p
 <section class="layout section"><div class="panel"><h2 id="chart-title">Indicator trend</h2><div class="legend"><span><i class="dot"></i>Recorded values</span><span>Baseline mean shown as dashed line</span></div><svg id="chart" class="chart" viewBox="0 0 700 240" role="img" aria-label="Indicator trend chart"></svg><div class="muted" id="chart-note"></div></div>
 <div class="panel"><h2>Review queue</h2><div id="alerts" class="empty">Loading report…</div><h2 style="margin-top:24px">Data provenance</h2><p class="muted" id="provenance">Loading…</p></div></section>
 <section class="section panel"><h2>Observation log</h2><div style="overflow-x:auto"><table><thead><tr><th>Mission day</th><th>Indicator</th><th>Value</th><th>Status</th><th>Source</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+
+<section class="section panel" id="nasa-research">
+  <div class="research-head">
+    <div><div class="brand">NASA OPEN SCIENCE DATA REPOSITORY · OSD-569</div><h2>Historical astronaut blood research</h2></div>
+    <span class="tag">REAL NASA RESEARCH DATA</span>
+  </div>
+  <p class="muted research-disclosure">Inspiration4 CBC samples from four de-identified crew members. Collection points are before launch and after return only — there are no in-flight CBC samples. This historical research dataset is separate from ASTRA's synthetic telemetry and does not generate alerts.</p>
+  <div class="research-stats" id="nasa-stats"><span>Loading NASA research data…</span></div>
+  <div class="research-controls">
+    <label for="nasa-subject">Crew sample ID<select id="nasa-subject"></select></label>
+    <label for="nasa-analyte">Blood indicator<select id="nasa-analyte"></select></label>
+  </div>
+  <div class="panel research-chart-wrap">
+    <div class="legend"><span><i class="dot"></i>Recorded sample</span><span>Dashed line = source reference midpoint (context only)</span></div>
+    <svg id="nasa-chart" class="chart" viewBox="0 0 700 240" role="img" aria-label="Historical NASA Inspiration4 blood sample values"></svg>
+    <p class="muted" id="nasa-chart-note"></p>
+  </div>
+  <div class="research-table-wrap">
+    <table><thead><tr><th>Sample point</th><th>Mission phase</th><th>Value</th><th>Lab reference interval</th><th>Data quality</th></tr></thead><tbody id="nasa-rows"></tbody></table>
+  </div>
+  <div id="nasa-quality" class="research-quality"></div>
+  <p class="muted research-citation">Acknowledgement: <strong>Data are courtesy of the NASA Open Science Data Repository.</strong> Dataset: <a href="https://osdr.nasa.gov/bio/repo/data/studies/OSD-569" target="_blank" rel="noopener">NASA OSDR OSD-569</a> · DOI: 10.26030/e0rx-sh52. Lab reference intervals are not mission limits, personalized baselines, or diagnostic thresholds. ASTRA preserves source values and flags a suspect sample instead of silently correcting it.</p>
+</section>
+
 <footer class="foot">ASTRA is an educational prototype, not a medical device. Alerts are statistical demonstrations, not clinical thresholds or flight rules. Synthetic readings are fictional and are not NASA telemetry.</footer>
 </main>
 <script>
@@ -49,4 +76,76 @@ function render(data){
  document.querySelector("#chart-note").textContent=base?"Personal reference baseline: "+fmt(base.mean)+" "+base.unit+".":"No matching baseline available for this series.";
 }
 fetch("../output/demo-report.json").then(r=>{if(!r.ok)throw Error("Report not found. Generate output/demo-report.json first.");return r.json();}).then(render).catch(e=>{document.querySelector("#alerts").textContent=e.message;document.querySelector("#provenance").textContent="Report unavailable.";});
-</script></body></html>
+</script>
+<script>
+(async function loadNasaResearch(){
+  const stats=document.querySelector("#nasa-stats");
+  const subjectSelect=document.querySelector("#nasa-subject");
+  const analyteSelect=document.querySelector("#nasa-analyte");
+  const tbody=document.querySelector("#nasa-rows");
+  const chart=document.querySelector("#nasa-chart");
+  const note=document.querySelector("#nasa-chart-note");
+  const qualityBox=document.querySelector("#nasa-quality");
+  const fmt=v=>Number(v).toLocaleString(undefined,{maximumFractionDigits:2});
+  try{
+    const response=await fetch("../data/nasa/osd569-cbc.json");
+    if(!response.ok) throw new Error("NASA research JSON is unavailable. Re-run the ASTRA CLI.");
+    const data=await response.json();
+    const records=data.records||[];
+    stats.innerHTML=[
+      data.summary.record_count+" measurements",
+      data.summary.sample_count+" blood-draw samples",
+      data.summary.subject_count+" de-identified crew",
+      data.summary.analyte_count+" analytes",
+      data.summary.suspect_sample_count+" sample-level quality flag"
+    ].map(x=>"<span>"+x+"</span>").join("");
+    const subjects=data.summary.subjects||[];
+    subjectSelect.innerHTML=subjects.map(s=>'<option value="'+s+'">'+s+'</option>').join("");
+    const analytes=[...new Map(records.map(r=>[r.analyte_id,{id:r.analyte_id,name:r.analyte_name,unit:r.unit}])).values()]
+      .sort((a,b)=>a.name.localeCompare(b.name));
+    const preferred=analytes.find(a=>a.id==="white_blood_cell_count");
+    analyteSelect.innerHTML=analytes.map(a=>'<option value="'+a.id+'">'+a.name+' ('+a.unit+')</option>').join("");
+    if(preferred) analyteSelect.value=preferred.id;
+    function draw(){
+      const subject=subjectSelect.value, analyte=analyteSelect.value;
+      const selected=records.filter(r=>r.subject_id===subject&&r.analyte_id===analyte)
+        .sort((a,b)=>a.relative_day-b.relative_day);
+      if(!selected.length){tbody.innerHTML='<tr><td colspan="5">No observations for this combination.</td></tr>';chart.innerHTML="";return;}
+      tbody.innerHTML=selected.map(r=>{
+        const range=fmt(r.reference_range_min)+"–"+fmt(r.reference_range_max)+" "+r.unit;
+        const label=r.quality==="suspect"?' <span class="quality-suspect">(suspect)</span>':"";
+        return "<tr><td>"+r.timepoint+"</td><td>"+r.phase+"</td><td>"+fmt(r.value)+" "+r.unit+"</td><td>"+range+"</td><td>"+r.quality+label+"</td></tr>";
+      }).join("");
+      const values=selected.map(r=>r.value);
+      const low=Math.min(...values,...selected.map(r=>r.reference_range_min));
+      const high=Math.max(...values,...selected.map(r=>r.reference_range_max));
+      const span=(high-low)||1;
+      const y=v=>202-(v-low)/span*165;
+      const x=i=>54+i*(600/Math.max(selected.length-1,1));
+      let svg='<line x1="45" y1="202" x2="660" y2="202" stroke="#34465d"/><line x1="45" y1="25" x2="45" y2="202" stroke="#34465d"/>';
+      const mid=(selected.reduce((s,r)=>s+(r.reference_range_min+r.reference_range_max)/2,0))/selected.length;
+      svg+='<line x1="45" y1="'+y(mid)+'" x2="660" y2="'+y(mid)+'" stroke="#f1bd68" stroke-dasharray="7 6"/>';
+      svg+='<text x="52" y="'+(y(mid)-7)+'" fill="#f1bd68" font-size="11">Average lab-range midpoint · context only</text>';
+      svg+='<polyline fill="none" stroke="#65d4d0" stroke-width="3" points="'+values.map((v,i)=>x(i)+","+y(v)).join(" ")+'"/>';
+      selected.forEach((r,i)=>{
+        const fill=r.quality==="suspect"?"#f1bd68":"#65d4d0";
+        svg+='<circle cx="'+x(i)+'" cy="'+y(r.value)+'" r="5" fill="'+fill+'"/>';
+        svg+='<text x="'+x(i)+'" y="222" text-anchor="middle" fill="#91a4bc" font-size="11">'+r.timepoint+'</text>';
+      });
+      chart.innerHTML=svg;
+      note.textContent=subject+" · "+selected[0].analyte_name+" · "+selected.length+
+        " published samples. Values are historical lab measurements; L− points are pre-flight and R+ points are after return.";
+      const flags=(data.quality_flags||[]).filter(f=>f.subject_id===subject);
+      qualityBox.innerHTML=flags.length?flags.map(f=>'<div class="alert"><b class="quality-suspect">Data-quality flag · '+f.timepoint+'</b><div>'+f.reason+'</div><div class="muted">Original source values are retained and marked suspect; do not infer health status from this sample.</div></div>').join(""):'<div class="muted">No sample-level consistency flag for this selected crew ID. This does not certify the data as clinically validated.</div>';
+    }
+    subjectSelect.addEventListener("change",draw);
+    analyteSelect.addEventListener("change",draw);
+    draw();
+  }catch(error){
+    stats.textContent=error.message;
+    tbody.innerHTML='<tr><td colspan="5">NASA data could not be loaded.</td></tr>';
+  }
+})();
+</script>
+
+</body></html>
